@@ -1,0 +1,789 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[english,vietnamese]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{circuits.ee.IEC, positioning, arrows.meta, calc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{steinmetz}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{black}
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+\textbf{\large VIETNAM NATIONAL UNIVERSITY HO CHI MINH CITY}\\
+\textbf{\large HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\
+\textbf{\normalsize Faculty of Electrical and Electronics Engineering}\\
+\vspace{0.5cm}
+
+\includegraphics[width=0.25\textwidth]{img/01_logobachkhoasang.png}\\
+\vspace{0.5cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{0.5cm}
+
+\textbf{\huge Microwave Engineering}\\
+\textbf{\large EE5430}\\
+\vspace{0.3cm}
+
+\textbf{\Large Exercise Report}\\
+\vspace{0.3cm}
+
+\textbf{\LARGE Transmission Line Analysis}\\
+\vspace{0.3cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Student:} & Vu Tien Giang - 2570188\\[0.5cm]
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Instructor:} & (Instructor Name)
+\end{tabular}
+
+\vfill
+
+{\large \today}
+
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+%=============================================================================
+% BAI TAP 1
+%=============================================================================
+\section{Bài tập 1: Quarter-Wave Transformer Matching}
+
+\subsection{Đề bài}
+Hai anten được nối với nhau qua một đoạn đường truyền sóng không tổn hao dài $\lambda/4$ bước sóng như hình vẽ. Anten A có trở kháng $Z_A = 80 + j20~\Omega$, anten B có trở kháng $Z_B = 45 + j30~\Omega$ và được mắc nối tiếp với một phần tử thuần kháng $jX$. Yêu cầu dòng điện qua anten A là $1{,}5\angle 0^\circ$~A và dòng điện qua anten B là $2\angle 90^\circ$~A.
+
+\begin{enumerate}
+    \item[(a)] Xác định $Z_0$ của đoạn $\lambda/4$ và giá trị $X$.
+    \item[(b)] Tính công suất trên mỗi anten.
+    \item[(c)] Tính trở kháng tổng nhìn từ đường truyền cáp tín hiệu $50~\Omega$ và hệ số phản xạ trên đường truyền này.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Xác định $Z_0$ và $X$}
+
+\textbf{Phân tích mạch:}
+
+Tại phía anten A (bên phải đoạn $\lambda/4$), trở kháng tải nhìn vào là:
+\[
+Z_A = 80 + j20~\Omega
+\]
+
+Điện áp trên anten A:
+\[
+V_A = I_A \cdot Z_A = 1{,}5\angle 0^\circ \times (80 + j20) = 120 + j30 = 123{,}69\angle 14{,}04^\circ~\text{V}
+\]
+
+Tại phía anten B, trở kháng tải là $Z_B + jX = (45 + j30) + jX = 45 + j(30 + X)$.
+
+Điện áp trên anten B (bao gồm cả $jX$):
+\[
+V_B = I_B \cdot [Z_B + jX] = 2\angle 90^\circ \times [45 + j(30 + X)]
+\]
+\[
+V_B = 2\angle 90^\circ \times [45 + j(30 + X)]
+\]
+\[
+V_B = j2 \times [45 + j(30 + X)] = j90 - 2(30 + X)
+\]
+\[
+V_B = -2(30 + X) + j90
+\]
+
+Vì anten B và phần tử $jX$ được mắc song song với đoạn $\lambda/4$ tại cùng một nút, nên $V_A = V_B$ (cùng điện áp tại điểm nối):
+
+Tuy nhiên, nhìn kỹ lại sơ đồ mạch: anten A và anten B nối song song ở phía bên phải, với anten B nối tiếp với $jX$. Do đó, điện áp tại điểm nối chung phải bằng nhau:
+
+\[
+V_A = V_B
+\]
+\[
+120 + j30 = -2(30 + X) + j90
+\]
+
+So sánh phần thực:
+\[
+120 = -2(30 + X) = -60 - 2X
+\]
+\[
+2X = -60 - 120 = -180
+\]
+\[
+\boxed{X = -90~\Omega}
+\]
+
+Kiểm tra phần ảo: $j30 \neq j90$ — có sự không khớp. Điều này cho thấy mạch có cấu hình cụ thể hơn.
+
+\textbf{Phân tích lại:} Nhìn sơ đồ mạch, $jX$ mắc song song (shunt) trên đường truyền $\lambda/4$, không nối tiếp với anten B. Anten A nối ở bên phải, anten B nối ở bên trái qua đoạn $\lambda/4$.
+
+Tải bên phải (phía anten A):
+\[
+Z_R = Z_A = 80 + j20~\Omega
+\]
+
+Tải bên trái (phía anten B) mắc song song với $jX$:
+\[
+Z_L = Z_B \| jX \quad \text{(nếu $jX$ shunt)}
+\]
+
+Tuy nhiên, do cấu trúc mạch cụ thể, ta tiếp cận bằng cách sử dụng tính chất đoạn $\lambda/4$.
+
+\textbf{Tính chất đoạn $\lambda/4$:}
+
+Đối với đường truyền không tổn hao dài $\lambda/4$:
+\[
+Z_{in} = \frac{Z_0^2}{Z_L}
+\]
+
+Dòng và áp tại hai đầu đoạn $\lambda/4$ liên hệ:
+\[
+V_1 = \frac{-jZ_0}{} \cdot I_2, \quad V_2 = -jZ_0 I_1
+\]
+
+Cụ thể hơn, ma trận ABCD của đoạn $\lambda/4$:
+\[
+\begin{bmatrix} A & B \\ C & D \end{bmatrix} = \begin{bmatrix} 0 & jZ_0 \\ jY_0 & 0 \end{bmatrix}
+\]
+
+Tại đầu bên trái (nơi nối nguồn $50~\Omega$, anten B và $jX$):
+\begin{itemize}
+    \item Nguồn cấp tín hiệu $50~\Omega$ kết nối
+    \item Anten B ($Z_B = 45 + j30~\Omega$) kết nối
+    \item $jX$ (shunt stub) kết nối
+\end{itemize}
+
+Tại đầu bên phải:
+\begin{itemize}
+    \item Anten A ($Z_A = 80 + j20~\Omega$) kết nối
+\end{itemize}
+
+\textbf{Áp dụng điều kiện dòng điện:}
+
+Điện áp tại nút bên phải (anten A):
+\[
+V_A = I_A \cdot Z_A = 1{,}5\angle 0^\circ \times (80 + j20) = 120 + j30~\text{V}
+\]
+
+Quan hệ qua đoạn $\lambda/4$:
+\[
+V_{\text{left}} = -jZ_0 \cdot I_A = -jZ_0 \times 1{,}5\angle 0^\circ = -j1{,}5Z_0
+\]
+\[
+I_{\text{left}} = \frac{-jV_A}{Z_0} = \frac{-j(120 + j30)}{Z_0} = \frac{30 - j120}{Z_0}
+\]
+
+Tại nút bên trái, dòng $I_{\text{left}}$ chia thành dòng qua anten B và dòng qua $jX$:
+\[
+V_{\text{left}} = I_B \cdot Z_B + \text{...}
+\]
+
+Thực tế, tại nút bên trái, điện áp nút là $V_{\text{left}}$, và:
+\[
+I_B = \frac{V_{\text{left}}}{Z_B} \quad \text{(nếu B mắc shunt)}
+\]
+
+Nhưng đề cho $I_B = 2\angle 90^\circ$~A qua anten B có trở kháng $Z_B = 45 + j30$ nối tiếp $jX$, nên:
+\[
+V_{\text{left}} = I_B \cdot (Z_B + jX) = 2\angle 90^\circ \times [45 + j(30 + X)]
+\]
+
+Đồng thời:
+\[
+V_{\text{left}} = -j1{,}5Z_0
+\]
+
+Từ đây:
+\[
+-j1{,}5Z_0 = 2\angle 90^\circ \times [45 + j(30 + X)]
+\]
+\[
+-j1{,}5Z_0 = j2 \times [45 + j(30 + X)]
+\]
+\[
+-j1{,}5Z_0 = j90 - 2(30 + X)
+\]
+\[
+-j1{,}5Z_0 = -2(30 + X) + j90
+\]
+
+So sánh phần ảo:
+\[
+-1{,}5Z_0 = 90 \implies Z_0 = -60 \quad \text{(không hợp lý)}
+\]
+
+Điều này cho thấy dấu cần chỉnh. Xem lại ma trận ABCD, với quy ước dòng đi vào cổng 2 (phía phải), ta có:
+\[
+V_1 = jZ_0 I_2
+\]
+
+Do anten A tải ở cổng 2, $I_2$ ra khỏi cổng (vào tải), nên $I_2 = I_A = 1{,}5\angle 0^\circ$:
+\[
+V_{\text{left}} = jZ_0 \times 1{,}5 = j1{,}5Z_0
+\]
+
+Khi đó:
+\[
+j1{,}5Z_0 = -2(30 + X) + j90
+\]
+
+Phần thực: $0 = -2(30 + X) \implies 30 + X = 0 \implies \boxed{X = -30~\Omega}$
+
+Phần ảo: $1{,}5Z_0 = 90 \implies \boxed{Z_0 = 60~\Omega}$
+
+\textbf{Kiểm tra:} Với $X = -30~\Omega$ (tụ điện), trở kháng nối tiếp anten B là:
+\[
+Z_B + jX = 45 + j30 + j(-30) = 45~\Omega \quad \text{(thuần trở)}
+\]
+
+Điện áp tại nút trái:
+\[
+V_{\text{left}} = I_B \times 45 = 2\angle 90^\circ \times 45 = 90\angle 90^\circ = j90~\text{V}
+\]
+
+Kiểm tra qua đoạn $\lambda/4$: $V_{\text{left}} = j1{,}5 \times 60 = j90$~V \checkmark
+
+\subsubsection{(b) Công suất trên mỗi anten}
+
+Công suất tiêu thụ trên anten (chỉ tính phần thực của trở kháng):
+\[
+P_A = \frac{1}{2}|I_A|^2 R_A = \frac{1}{2} \times (1{,}5)^2 \times 80 = \frac{1}{2} \times 2{,}25 \times 80 = \boxed{90~\text{W}}
+\]
+
+\[
+P_B = \frac{1}{2}|I_B|^2 R_B = \frac{1}{2} \times (2)^2 \times 45 = \frac{1}{2} \times 4 \times 45 = \boxed{90~\text{W}}
+\]
+
+Tổng công suất: $P_{\text{total}} = P_A + P_B = 180$~W.
+
+\subsubsection{(c) Trở kháng tổng và hệ số phản xạ}
+
+Trở kháng nhìn vào từ nguồn $50~\Omega$:
+
+Tại nút bên trái, trở kháng tổng gồm:
+\begin{itemize}
+    \item Nhánh anten B nối tiếp $jX$: $Z_{B,\text{total}} = 45 + j30 + j(-30) = 45~\Omega$
+    \item Nhánh đoạn $\lambda/4$ tải bởi anten A: $Z_{in,\lambda/4} = \frac{Z_0^2}{Z_A} = \frac{60^2}{80 + j20} = \frac{3600}{80 + j20}$
+\end{itemize}
+
+Tính $Z_{in,\lambda/4}$:
+\[
+Z_{in,\lambda/4} = \frac{3600}{80 + j20} = \frac{3600(80 - j20)}{80^2 + 20^2} = \frac{3600(80 - j20)}{6800}
+\]
+\[
+= \frac{3600 \times 80}{6800} - j\frac{3600 \times 20}{6800} = \frac{288000}{6800} - j\frac{72000}{6800}
+\]
+\[
+= 42{,}35 - j10{,}59~\Omega
+\]
+
+Hai nhánh mắc song song:
+\[
+Z_{\text{total}} = Z_{B,\text{total}} \| Z_{in,\lambda/4} = \frac{45 \times (42{,}35 - j10{,}59)}{45 + 42{,}35 - j10{,}59}
+\]
+\[
+= \frac{45(42{,}35 - j10{,}59)}{87{,}35 - j10{,}59}
+\]
+
+Tử: $45 \times (42{,}35 - j10{,}59) = 1905{,}75 - j476{,}55$
+
+Mẫu: $87{,}35 - j10{,}59$, $|$mẫ$|^2 = 87{,}35^2 + 10{,}59^2 = 7630{,}02 + 112{,}15 = 7742{,}17$
+
+\[
+Z_{\text{total}} = \frac{(1905{,}75 - j476{,}55)(87{,}35 + j10{,}59)}{7742{,}17}
+\]
+
+Tử số:
+\begin{align*}
+&= 1905{,}75 \times 87{,}35 + 1905{,}75 \times j10{,}59 - j476{,}55 \times 87{,}35 - j476{,}55 \times j10{,}59 \\
+&= 166\,432{,}26 + j20\,183{,}84 - j41\,626{,}43 + 5\,046{,}86 \\
+&= (166\,432{,}26 + 5\,046{,}86) + j(20\,183{,}84 - 41\,626{,}43) \\
+&= 171\,479{,}12 - j21\,442{,}59
+\end{align*}
+
+\[
+Z_{\text{total}} = \frac{171\,479{,}12 - j21\,442{,}59}{7742{,}17} = 22{,}15 - j2{,}77~\Omega
+\]
+
+Hệ số phản xạ (trên đường truyền $50~\Omega$):
+\[
+\Gamma = \frac{Z_{\text{total}} - Z_0}{Z_{\text{total}} + Z_0} = \frac{22{,}15 - j2{,}77 - 50}{22{,}15 - j2{,}77 + 50}
+\]
+\[
+= \frac{-27{,}85 - j2{,}77}{72{,}15 - j2{,}77}
+\]
+
+\[
+|\Gamma| = \frac{\sqrt{27{,}85^2 + 2{,}77^2}}{\sqrt{72{,}15^2 + 2{,}77^2}} = \frac{\sqrt{775{,}62 + 7{,}67}}{\sqrt{5205{,}62 + 7{,}67}} = \frac{\sqrt{783{,}29}}{\sqrt{5213{,}29}} = \frac{27{,}99}{72{,}20}
+\]
+\[
+\boxed{|\Gamma| = 0{,}388}
+\]
+
+%=============================================================================
+% BAI TAP 2
+%=============================================================================
+\newpage
+\section{Bài tập 2: Quarter-Wave Transformer Impedance Matching}
+
+\subsection{Đề bài}
+Một đoạn đường truyền sóng không tổn hao được dùng làm bộ biến đổi trở kháng để phối hợp tải $50~\Omega$ với đường truyền sóng có trở kháng đặc tính $200~\Omega$ tại tần số $300$~MHz. Vận tốc truyền sóng trên đoạn biến đổi là $2 \times 10^8$~m/s. Tìm:
+\begin{enumerate}
+    \item[(a)] Chiều dài của đoạn biến đổi.
+    \item[(b)] Trở kháng đặc tính của đoạn biến đổi.
+    \item[(c)] Hệ số phản xạ tại tải và tỉ số sóng đứng trên đoạn biến đổi.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Chiều dài đoạn biến đổi}
+
+Bộ biến đổi $\lambda/4$ có chiều dài bằng $\lambda/4$.
+
+Bước sóng trên đoạn biến đổi:
+\[
+\lambda = \frac{v_p}{f} = \frac{2 \times 10^8}{300 \times 10^6} = \frac{2}{3}~\text{m}
+\]
+
+Chiều dài đoạn biến đổi:
+\[
+\ell = \frac{\lambda}{4} = \frac{1}{4} \times \frac{2}{3} = \frac{1}{6}~\text{m}
+\]
+\[
+\boxed{\ell = \frac{1}{6}~\text{m} \approx 16{,}67~\text{cm}}
+\]
+
+\subsubsection{(b) Trở kháng đặc tính của đoạn biến đổi}
+
+Điều kiện phối hợp trở kháng bằng đoạn $\lambda/4$:
+\[
+Z_0' = \sqrt{Z_0 \cdot Z_L}
+\]
+
+Trong đó $Z_0 = 200~\Omega$ (trở kháng đường truyền chính) và $Z_L = 50~\Omega$ (trở kháng tải):
+\[
+Z_0' = \sqrt{200 \times 50} = \sqrt{10\,000} = \boxed{100~\Omega}
+\]
+
+\subsubsection{(c) Hệ số phản xạ và tỉ số sóng đứng trên đoạn biến đổi}
+
+Hệ số phản xạ tại tải (nhìn từ đoạn biến đổi vào tải $50~\Omega$):
+\[
+\Gamma_L = \frac{Z_L - Z_0'}{Z_L + Z_0'} = \frac{50 - 100}{50 + 100} = \frac{-50}{150} = \boxed{-\frac{1}{3} \approx -0{,}333}
+\]
+
+Tỉ số sóng đứng (SWR) trên đoạn biến đổi:
+\[
+\text{SWR} = \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|} = \frac{1 + \frac{1}{3}}{1 - \frac{1}{3}} = \frac{\frac{4}{3}}{\frac{2}{3}} = \boxed{2}
+\]
+
+%=============================================================================
+% BAI TAP 3
+%=============================================================================
+\newpage
+\section{Bài tập 3: Xác định thông số đường truyền từ phép đo trở kháng}
+
+\subsection{Đề bài}
+Trở kháng ngõ vào của một đường truyền sóng không tổn hao đo được là $37{,}5 + j24{,}1~\Omega$ khi đầu cuối nối với tải $Z_L$, là $j89{,}4~\Omega$ khi ngắn mạch đầu cuối và $-j62{,}9~\Omega$ khi hở mạch đầu cuối. Tìm trở kháng đặc tính của đường truyền, trở kháng tải và chiều dài điện của đường truyền.
+
+\subsection{Lời giải}
+
+\subsubsection{Trở kháng đặc tính $Z_0$}
+
+Đối với đường truyền không tổn hao, trở kháng ngõ vào khi ngắn mạch và hở mạch:
+\[
+Z_{in,SC} = jZ_0 \tan(\beta\ell) = j89{,}4~\Omega
+\]
+\[
+Z_{in,OC} = -jZ_0 \cot(\beta\ell) = -j62{,}9~\Omega
+\]
+
+Nhân hai biểu thức:
+\[
+Z_{in,SC} \times Z_{in,OC} = jZ_0\tan(\beta\ell) \times (-jZ_0\cot(\beta\ell))
+\]
+\[
+= j \times (-j) \times Z_0^2 \times \tan(\beta\ell) \times \cot(\beta\ell) = Z_0^2
+\]
+
+\[
+Z_0^2 = Z_{in,SC} \times Z_{in,OC} = j89{,}4 \times (-j62{,}9) = j \times (-j) \times 89{,}4 \times 62{,}9
+\]
+\[
+= 89{,}4 \times 62{,}9 = 5623{,}26
+\]
+
+\[
+\boxed{Z_0 = \sqrt{5623{,}26} = 74{,}99 \approx 75~\Omega}
+\]
+
+\subsubsection{Chiều dài điện $\beta\ell$}
+
+Từ $Z_{in,SC}$:
+\[
+jZ_0\tan(\beta\ell) = j89{,}4
+\]
+\[
+\tan(\beta\ell) = \frac{89{,}4}{Z_0} = \frac{89{,}4}{75} = 1{,}192
+\]
+\[
+\beta\ell = \arctan(1{,}192) = 49{,}97^\circ
+\]
+
+Kiểm tra với $Z_{in,OC}$:
+\[
+-jZ_0\cot(\beta\ell) = -j62{,}9
+\]
+\[
+\cot(\beta\ell) = \frac{62{,}9}{75} = 0{,}839
+\]
+\[
+\beta\ell = \text{arccot}(0{,}839) = \arctan\left(\frac{1}{0{,}839}\right) = \arctan(1{,}192) = 49{,}97^\circ \quad \checkmark
+\]
+
+\[
+\boxed{\beta\ell \approx 50^\circ}
+\]
+
+\subsubsection{Trở kháng tải $Z_L$}
+
+Trở kháng ngõ vào khi nối tải $Z_L$:
+\[
+Z_{in} = Z_0 \frac{Z_L + jZ_0\tan(\beta\ell)}{Z_0 + jZ_L\tan(\beta\ell)} = 37{,}5 + j24{,}1
+\]
+
+Đặt $t = \tan(\beta\ell) = 1{,}192$ và $Z_0 = 75~\Omega$:
+\[
+37{,}5 + j24{,}1 = 75 \cdot \frac{Z_L + j75 \times 1{,}192}{75 + jZ_L \times 1{,}192}
+\]
+\[
+37{,}5 + j24{,}1 = 75 \cdot \frac{Z_L + j89{,}4}{75 + j1{,}192 Z_L}
+\]
+
+$(37{,}5 + j24{,}1)(75 + j1{,}192 Z_L) = 75(Z_L + j89{,}4)$
+
+Khai triển vế trái:
+\[
+37{,}5 \times 75 + j37{,}5 \times 1{,}192 Z_L + j24{,}1 \times 75 + j^2 24{,}1 \times 1{,}192 Z_L
+\]
+\[
+= 2812{,}5 + j44{,}7Z_L + j1807{,}5 - 28{,}73Z_L
+\]
+\[
+= (2812{,}5 - 28{,}73Z_L) + j(44{,}7Z_L + 1807{,}5)
+\]
+
+Lưu ý: $Z_L$ là số phức. Đặt $Z_L = R + jX_L$:
+
+Vế phải: $75(R + jX_L + j89{,}4) = 75R + j75(X_L + 89{,}4)$
+
+Vế trái:
+\begin{align*}
+&(37{,}5 + j24{,}1)(75 + j1{,}192(R + jX_L)) \\
+&= (37{,}5 + j24{,}1)(75 + j1{,}192R - 1{,}192X_L) \\
+&= (37{,}5 + j24{,}1)((75 - 1{,}192X_L) + j1{,}192R)
+\end{align*}
+
+Khai triển:
+\begin{align*}
+&= 37{,}5(75 - 1{,}192X_L) + j37{,}5 \times 1{,}192R \\
+&\quad + j24{,}1(75 - 1{,}192X_L) + j^2 24{,}1 \times 1{,}192R \\
+&= [37{,}5(75 - 1{,}192X_L) - 24{,}1 \times 1{,}192R] \\
+&\quad + j[37{,}5 \times 1{,}192R + 24{,}1(75 - 1{,}192X_L)]
+\end{align*}
+
+Phần thực:
+\[
+37{,}5(75 - 1{,}192X_L) - 28{,}73R = 75R
+\]
+\[
+2812{,}5 - 44{,}7X_L - 28{,}73R = 75R
+\]
+\[
+2812{,}5 - 44{,}7X_L = 103{,}73R \quad \text{...(1)}
+\]
+
+Phần ảo:
+\[
+44{,}7R + 24{,}1(75 - 1{,}192X_L) = 75(X_L + 89{,}4)
+\]
+\[
+44{,}7R + 1807{,}5 - 28{,}73X_L = 75X_L + 6705
+\]
+\[
+44{,}7R = 103{,}73X_L + 4897{,}5 \quad \text{...(2)}
+\]
+
+Từ (1): $X_L = \frac{2812{,}5 - 103{,}73R}{44{,}7}$
+
+Thế vào (2):
+\[
+44{,}7R = 103{,}73 \times \frac{2812{,}5 - 103{,}73R}{44{,}7} + 4897{,}5
+\]
+\[
+44{,}7^2 R = 103{,}73(2812{,}5 - 103{,}73R) + 4897{,}5 \times 44{,}7
+\]
+\[
+1998{,}09R = 291\,736{,}25 - 10\,759{,}91R + 218\,918{,}25
+\]
+\[
+1998{,}09R + 10\,759{,}91R = 510\,654{,}5
+\]
+\[
+12\,758R = 510\,654{,}5
+\]
+\[
+R = 40{,}03 \approx 40~\Omega
+\]
+
+Từ (1):
+\[
+X_L = \frac{2812{,}5 - 103{,}73 \times 40}{44{,}7} = \frac{2812{,}5 - 4149{,}2}{44{,}7} = \frac{-1336{,}7}{44{,}7} = -29{,}91 \approx -30~\Omega
+\]
+
+\[
+\boxed{Z_L = 40 - j30~\Omega}
+\]
+
+\textbf{Kiểm tra:}
+\[
+Z_{in} = 75 \times \frac{(40 - j30) + j89{,}4}{75 + j1{,}192(40 - j30)}
+= 75 \times \frac{40 + j59{,}4}{75 + j47{,}68 + 35{,}76}
+\]
+\[
+= 75 \times \frac{40 + j59{,}4}{110{,}76 + j47{,}68}
+\]
+
+$\frac{40 + j59{,}4}{110{,}76 + j47{,}68} = \frac{(40 + j59{,}4)(110{,}76 - j47{,}68)}{110{,}76^2 + 47{,}68^2}$
+
+Tử: $40 \times 110{,}76 + 40 \times (-j47{,}68) + j59{,}4 \times 110{,}76 + j59{,}4 \times (-j47{,}68)$
+$= 4430{,}4 - j1907{,}2 + j6579{,}14 + 2832{,}19 = 7262{,}59 + j4671{,}94$
+
+Mẫ: $12\,267{,}78 + 2273{,}38 = 14\,541{,}16$
+
+$= 0{,}4994 + j0{,}3213$
+
+$Z_{in} = 75 \times (0{,}4994 + j0{,}3213) = 37{,}46 + j24{,}10 \approx 37{,}5 + j24{,}1$ \checkmark
+
+%=============================================================================
+% BAI TAP 4
+%=============================================================================
+\newpage
+\section{Bài tập 4: Hai nguồn tín hiệu nối qua đường truyền $\lambda/4$}
+
+\subsection{Đề bài}
+Hai nguồn tín hiệu A và B được nối với nhau qua một đường truyền sóng không tổn hao dài $\lambda/4$ bước sóng có trở kháng đặc tính $75~\Omega$. Mỗi nguồn có biên độ sức điện động $10$~V và trở kháng nguồn $75~\Omega$. Tổ hợp này lại nối một tải $25~\Omega$ qua một đoạn $\lambda/4$ thứ hai có trở kháng đặc tính $75~\Omega$ như hình vẽ.
+
+\begin{enumerate}
+    \item[(a)] Tính công suất trên tải khi hai nguồn cùng pha ($\varphi = 0^\circ$).
+    \item[(b)] Tính công suất trên tải khi $\varphi = 90^\circ$.
+    \item[(c)] Góc pha $\varphi$ của nguồn B bằng bao nhiêu thì công suất trên tải lớn nhất, giá trị lớn nhất đó bằng bao nhiêu?
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{Thiết lập bài toán}
+
+Nguồn A: $V_A = 10\angle 0^\circ$~V, $Z_{sA} = 75~\Omega$
+
+Nguồn B: $V_B = 10\angle\varphi$~V, $Z_{sB} = 75~\Omega$
+
+Đoạn $\lambda/4$ thứ nhất nối A đến nút giữa (nơi B nối vào).
+
+Đoạn $\lambda/4$ thứ hai nối nút giữa đến tải $Z_L = 25~\Omega$.
+
+\textbf{Phân tích:}
+
+Trở kháng nhìn từ nút giữa vào đoạn $\lambda/4$ thứ hai (đến tải $25~\Omega$):
+\[
+Z_{in2} = \frac{Z_{02}^2}{Z_L} = \frac{75^2}{25} = \frac{5625}{25} = 225~\Omega
+\]
+
+Trở kháng nhìn từ nguồn A qua đoạn $\lambda/4$ thứ nhất vào nút giữa:
+
+Tại nút giữa, tải bao gồm: $Z_B \| Z_{in2}$, trong đó $Z_B = 75~\Omega$ (trở kháng nguồn B khi nguồn B tắt, tức thế Thevenin).
+
+Tuy nhiên, do cả hai nguồn đều hoạt động, ta cần sử dụng nguyên lý xếp chồng hoặc phân tích mạch trực tiếp.
+
+\textbf{Sử dụng ma trận ABCD cho đoạn $\lambda/4$:}
+
+Ma trận ABCD đoạn $\lambda/4$ ($Z_0 = 75~\Omega$):
+\[
+\begin{bmatrix} A & B \\ C & D \end{bmatrix} = \begin{bmatrix} 0 & jZ_0 \\ jY_0 & 0 \end{bmatrix} = \begin{bmatrix} 0 & j75 \\ j/75 & 0 \end{bmatrix}
+\]
+
+\textbf{Gọi các biến tại nút giữa:} $V_m$ là điện áp, $I_m$ là dòng.
+
+\textbf{Từ phía nguồn A qua đoạn $\lambda/4$ thứ nhất:}
+
+Tại đầu vào (nguồn A): $V_A' = V_A - I_A Z_{sA} = 10\angle 0^\circ - 75 I_A$
+
+Quan hệ qua đoạn $\lambda/4$:
+\[
+V_A' = jZ_0 I_{m,A}, \quad I_A = jY_0 V_m
+\]
+
+Trong đó $I_{m,A}$ là dòng đi vào nút giữa từ đoạn $\lambda/4$ thứ nhất.
+
+$V_A' = 10 - 75 \times jY_0 V_m = 10 - 75 \times \frac{j}{75} V_m = 10 - jV_m$
+
+Đồng thời: $V_A' = jZ_0 I_{m,A} = j75 I_{m,A}$
+
+Và: $V_m = jZ_0 I_A$, nên $I_A = \frac{V_m}{j75} = \frac{-jV_m}{75}$
+
+$V_A' = 10 - 75 \times \frac{-jV_m}{75} = 10 + jV_m$
+
+Nhưng cũng: $V_A' = j75 I_{m,A}$, nên: $I_{m,A} = \frac{V_A'}{j75} = \frac{10 + jV_m}{j75}$
+
+\textbf{Từ phía nguồn B (kết nối trực tiếp tại nút giữa):}
+
+$V_m = V_B - I_B Z_{sB} = 10\angle\varphi - 75 I_B$
+
+$I_B = \frac{10\angle\varphi - V_m}{75}$
+
+\textbf{Từ phía tải qua đoạn $\lambda/4$ thứ hai:}
+
+$V_m = j75 I_L$, $I_{m,L} = jY_0 V_L = \frac{jV_L}{75}$
+
+Trong đó $V_L = I_L \times 25$ (tải):
+$V_m = j75 I_L \implies I_L = \frac{V_m}{j75} = \frac{-jV_m}{75}$
+
+$V_L = 25 I_L = \frac{-j25V_m}{75} = \frac{-jV_m}{3}$
+
+$I_{m,L} = \frac{j \times (-jV_m/3)}{75} = \frac{V_m/3}{75} = \frac{V_m}{225}$
+
+\textbf{Phương trình KCL tại nút giữa:}
+
+$I_{m,A} = I_B + I_{m,L}$
+
+$\frac{10 + jV_m}{j75} = \frac{10\angle\varphi - V_m}{75} + \frac{V_m}{225}$
+
+Nhân cả hai vế với $225$:
+
+$\frac{225(10 + jV_m)}{j75} = \frac{225(10\angle\varphi - V_m)}{75} + V_m$
+
+$\frac{3(10 + jV_m)}{j} = 3(10\angle\varphi - V_m) + V_m$
+
+$-j3(10 + jV_m) = 30\angle\varphi - 3V_m + V_m$
+
+$-j30 + 3V_m = 30\angle\varphi - 2V_m$
+
+$5V_m = 30\angle\varphi + j30$
+
+$V_m = 6\angle\varphi + j6 = 6(\cos\varphi + j\sin\varphi) + j6 = 6\cos\varphi + j(6\sin\varphi + 6)$
+
+\subsubsection{(a) Công suất khi $\varphi = 0^\circ$}
+
+\[
+V_m = 6\cos 0^\circ + j(6\sin 0^\circ + 6) = 6 + j6
+\]
+
+$|V_m| = \sqrt{36 + 36} = 6\sqrt{2}$
+
+Công suất trên tải:
+\[
+P_L = \frac{|V_m|^2}{2 \times 225} = \frac{72}{450} = 0{,}16~\text{W}
+\]
+
+Hoặc tính qua $V_L$:
+\[
+|V_L| = \frac{|V_m|}{3} = \frac{6\sqrt{2}}{3} = 2\sqrt{2}
+\]
+\[
+P_L = \frac{|V_L|^2}{2 R_L} = \frac{8}{2 \times 25} = \frac{8}{50} = \boxed{0{,}16~\text{W} = 160~\text{mW}}
+\]
+
+\subsubsection{(b) Công suất khi $\varphi = 90^\circ$}
+
+\[
+V_m = 6\cos 90^\circ + j(6\sin 90^\circ + 6) = 0 + j(6 + 6) = j12
+\]
+
+$|V_m| = 12$
+
+\[
+P_L = \frac{|V_m|^2}{2 \times 225} = \frac{144}{450} = \boxed{0{,}32~\text{W} = 320~\text{mW}}
+\]
+
+\subsubsection{(c) Góc pha $\varphi$ để công suất cực đại}
+
+\[
+|V_m|^2 = (6\cos\varphi)^2 + (6\sin\varphi + 6)^2
+\]
+\[
+= 36\cos^2\varphi + 36\sin^2\varphi + 72\sin\varphi + 36
+\]
+\[
+= 36(\cos^2\varphi + \sin^2\varphi) + 72\sin\varphi + 36
+\]
+\[
+= 36 + 72\sin\varphi + 36 = 72 + 72\sin\varphi
+\]
+\[
+= 72(1 + \sin\varphi)
+\]
+
+$|V_m|^2$ cực đại khi $\sin\varphi = 1$, tức $\varphi = 90^\circ$.
+
+\[
+|V_m|^2_{\max} = 72(1 + 1) = 144
+\]
+
+\[
+P_{L,\max} = \frac{144}{450} = \boxed{0{,}32~\text{W} = 320~\text{mW}}
+\]
+
+\[
+\boxed{\varphi = 90^\circ}
+\]
+
+Vậy công suất trên tải lớn nhất khi $\varphi = 90^\circ$ và giá trị lớn nhất là $320$~mW (trùng với kết quả câu (b)).
+
+\end{document}
