@@ -1,0 +1,50 @@
+name: Build LaTeX Document
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: |
+            EE5430_Exercise_Report_Vu_Tien_Giang_2570188.tex
+          compiler: pdflatex
+          args: -interaction=nonstopmode -file-line-error
+          work_in_root_file_dir: true
+
+      - name: Keep Artifact for backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-pdf
+          path: |
+            EE5430_Exercise_Report_Vu_Tien_Giang_2570188.pdf
+          
+      - name: Create Release with PDF
+        uses: ncipollo/release-action@v1
+        if: github.event_name != 'pull_request'
+        with:
+          artifacts: "EE5430_Exercise_Report_Vu_Tien_Giang_2570188.pdf"
+          tag: "latest"
+          name: "Latest PDF Report"
+          body: "File báo cáo PDF được tự động cấu hình và biên dịch từ source code LaTeX mới nhất."
+          allowUpdates: true
+          makeLatest: true
+          token: ${{ secrets.GITHUB_TOKEN }}
