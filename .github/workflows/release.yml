@@ -1,0 +1,32 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags like v1.0.0
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX documents
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: "EE5430_*.tex"
+          glob_root_file: true
+          args: "-pdf -file-line-error -interaction=nonstopmode"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            EE5430_*.pdf
+          generate_release_notes: true
+
