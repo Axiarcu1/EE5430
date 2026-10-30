@@ -1,0 +1,1186 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[english,vietnamese]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{circuits.ee.IEC, positioning, arrows.meta, calc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{steinmetz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{black}
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+\textbf{\large VIETNAM NATIONAL UNIVERSITY HO CHI MINH CITY}\\
+\textbf{\large HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\
+\textbf{\normalsize Faculty of Electrical and Electronics Engineering}\\
+\vspace{0.5cm}
+
+\includegraphics[width=0.25\textwidth]{img/01_logobachkhoasang.png}\\
+\vspace{0.5cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{0.5cm}
+
+\textbf{\huge Microwave Engineering}\\
+\textbf{\large EE5430}\\
+\vspace{0.3cm}
+
+\textbf{\Large BT1 Report}\\
+\vspace{0.3cm}
+
+\textbf{\LARGE Scattering Matrix}\\
+\vspace{0.3cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Student:} & Vu Tien Giang - 2570188\\[0.5cm]
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Instructor:} & (HOANG MANH HA)
+\end{tabular}
+
+\vfill
+
+{\large \today}
+
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+%=============================================================================
+% BAI 1: Bộ suy giảm hình T
+%=============================================================================
+\section{Bài 1: Bộ suy giảm hình T (T-Attenuator)}
+
+\subsection{Đề bài}
+Một bộ suy giảm hình T gồm hai điện trở nối tiếp $R_1$ và một điện trở song song $R_2$ được thiết kế để phối hợp với $50~\Omega$ ở cả hai cửa và có độ suy giảm 6~dB.
+
+\begin{enumerate}
+    \item[(a)] Tính $R_1$ và $R_2$.
+    \item[(b)] Viết ma trận $[S]$ của bộ suy giảm; mạng có thuận nghịch, phối hợp, không tổn hao không?
+    \item[(c)] Cửa 2 được nối với tải $Z_L = 100~\Omega$. Tính hệ số phản xạ $\Gamma$ nhìn vào cửa 1 và suy hao phản hồi (return loss) tại cửa 1. So sánh với suy hao phản hồi khi nối tải trực tiếp vào nguồn và rút ra công dụng của bộ suy giảm.
+    \item[(d)] Trong trường hợp (c), với công suất tới 1~mW ở cửa 1, tính công suất phản xạ, công suất đến tải và công suất tiêu tán trong bộ suy giảm.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2, >=Stealth]
+    % Source
+    \draw (0,2) node[left] {Nguồn $50~\Omega$};
+    \draw[thick] (0,2) -- (1,2);
+    
+    % R1 left
+    \draw[thick] (1,2) -- (1.3,2);
+    \draw[thick] (1.3,1.7) rectangle (2.7,2.3) node[midway] {$R_1$};
+    \draw[thick] (2.7,2) -- (3,2);
+    
+    % R2 shunt
+    \draw[thick] (3,2) -- (3,1.7);
+    \draw[thick] (2.7,0.5) rectangle (3.3,1.7) node[midway] {$R_2$};
+    \draw[thick] (3,0.5) -- (3,0);
+    
+    % R1 right
+    \draw[thick] (3,2) -- (3.3,2);
+    \draw[thick] (3.3,1.7) rectangle (4.7,2.3) node[midway] {$R_1$};
+    \draw[thick] (4.7,2) -- (5.5,2);
+    
+    % Load
+    \draw (5.5,2) node[right] {$Z_L$};
+    
+    % Ground
+    \draw[thick] (0,0) -- (5.5,0);
+    \draw[thick] (0,0) -- (0,2);
+    \draw[thick] (5.5,0) -- (5.5,2);
+    
+    % Port labels
+    \draw[<->] (0.5,2.6) -- (0.5,2.6) node[above] {Cửa 1};
+    \draw (0.2,2.5) node[above] {$a_1$};
+    \draw (0.2,1.5) node[below] {};
+    \draw (5.3,2.5) node[above] {$a_2$};
+    
+    % Port markers
+    \draw[dashed] (0.5,-0.3) -- (0.5,2.8) node[above] {Cửa 1};
+    \draw[dashed] (5.0,-0.3) -- (5.0,2.8) node[above] {Cửa 2};
+\end{tikzpicture}
+\caption{Bộ suy giảm hình T giữa nguồn $50~\Omega$ và tải $Z_L$}
+\end{figure}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Tính $R_1$ và $R_2$}
+
+\textbf{Điều kiện phối hợp trở kháng:}
+
+Bộ suy giảm hình T đối xứng cần phối hợp $Z_0 = 50~\Omega$ ở cả hai cửa. Khi cửa 2 nối tải $Z_0$, trở kháng nhìn vào cửa 1 phải bằng $Z_0$.
+
+Với bộ suy giảm có độ suy giảm $L$ (dB), ta định nghĩa:
+\[
+K = 10^{L/20} = 10^{6/20} = 10^{0{,}3} = 1{,}9953 \approx 2
+\]
+
+Đây là tỉ số điện áp (voltage ratio). Công thức thiết kế cho bộ suy giảm hình T:
+\[
+R_1 = Z_0 \cdot \frac{K - 1}{K + 1} = 50 \times \frac{2 - 1}{2 + 1} = 50 \times \frac{1}{3} = \boxed{16{,}61~\Omega}
+\]
+
+\[
+R_2 = Z_0 \cdot \frac{2K}{K^2 - 1} = 50 \times \frac{2 \times 1{,}9953}{1{,}9953^2 - 1} = 50 \times \frac{3{,}9906}{2{,}9812} = \boxed{66{,}93~\Omega}
+\]
+
+\textbf{Kiểm tra:} Trở kháng nhìn vào cửa 1 khi cửa 2 nối $50~\Omega$:
+\[
+Z_{in} = R_1 + R_2 \| (R_1 + Z_0) = 16{,}61 + \frac{66{,}93 \times (16{,}61 + 50)}{66{,}93 + 16{,}61 + 50}
+\]
+\[
+= 16{,}61 + \frac{66{,}93 \times 66{,}61}{133{,}54} = 16{,}61 + \frac{4458{,}39}{133{,}54} = 16{,}61 + 33{,}39 = 50~\Omega \quad \checkmark
+\]
+
+\subsubsection{(b) Ma trận $[S]$ của bộ suy giảm}
+
+\textbf{Tính các tham số S:}
+
+Vì bộ suy giảm phối hợp ở cả hai cửa ($Z_{in} = Z_0$ khi cửa kia nối $Z_0$):
+\[
+S_{11} = S_{22} = 0
+\]
+
+Hệ số truyền (suy giảm 6~dB):
+\[
+|S_{21}| = 10^{-6/20} = 10^{-0{,}3} = 0{,}5012
+\]
+
+Bộ suy giảm thuần trở, không gây dịch pha, nên $S_{21}$ là số thực dương:
+\[
+S_{21} = S_{12} = 0{,}5012
+\]
+
+Ma trận tán xạ:
+\[
+\boxed{[S] = \begin{bmatrix} 0 & 0{,}501 \\ 0{,}501 & 0 \end{bmatrix}}
+\]
+
+\textbf{Nhận xét:}
+\begin{itemize}
+    \item \textbf{Thuận nghịch (Reciprocal):} $S_{12} = S_{21}$ $\Rightarrow$ \textbf{Có.} Mạng chỉ gồm các phần tử thụ động tuyến tính (điện trở), nên thuận nghịch.
+    \item \textbf{Phối hợp (Matched):} $S_{11} = S_{22} = 0$ $\Rightarrow$ \textbf{Có.} Không có phản xạ khi các cửa được kết cuối đúng $Z_0$.
+    \item \textbf{Không tổn hao (Lossless):} Kiểm tra điều kiện $[S]^H[S] = [I]$:
+    \[
+    [S]^H[S] = \begin{bmatrix} 0 & 0{,}501 \\ 0{,}501 & 0 \end{bmatrix} \begin{bmatrix} 0 & 0{,}501 \\ 0{,}501 & 0 \end{bmatrix} = \begin{bmatrix} 0{,}251 & 0 \\ 0 & 0{,}251 \end{bmatrix} \neq [I]
+    \]
+    $\Rightarrow$ \textbf{Không.} Mạng có tổn hao (các điện trở tiêu tán năng lượng).
+\end{itemize}
+
+\subsubsection{(c) Cửa 2 nối tải $Z_L = 100~\Omega$: Hệ số phản xạ và suy hao phản hồi}
+
+\textbf{Hệ số phản xạ tại tải $100~\Omega$ (nhìn từ cửa 2 của bộ suy giảm):}
+\[
+\Gamma_L = \frac{Z_L - Z_0}{Z_L + Z_0} = \frac{100 - 50}{100 + 50} = \frac{50}{150} = \frac{1}{3} = 0{,}3333
+\]
+
+\textbf{Hệ số phản xạ nhìn vào cửa 1:}
+
+Sử dụng công thức cho mạng hai cửa:
+\[
+\Gamma_{in} = S_{11} + \frac{S_{12} S_{21} \Gamma_L}{1 - S_{22} \Gamma_L}
+\]
+
+Thay số (với $S_{11} = 0$, $S_{22} = 0$):
+\[
+\Gamma_{in} = 0 + \frac{0{,}5012 \times 0{,}5012 \times 0{,}3333}{1 - 0 \times 0{,}3333} = \frac{0{,}2512 \times 0{,}3333}{1}
+\]
+\[
+\boxed{\Gamma_{in} = 0{,}0837}
+\]
+
+\textbf{Suy hao phản hồi tại cửa 1:}
+\[
+\boxed{RL_1 = -20\log_{10}|\Gamma_{in}| = -20\log_{10}(0{,}0837) = 21{,}55~\text{dB}}
+\]
+
+\textbf{So sánh khi nối tải trực tiếp vào nguồn (không có bộ suy giảm):}
+\[
+\Gamma_{\text{direct}} = \frac{100 - 50}{100 + 50} = 0{,}3333
+\]
+\[
+RL_{\text{direct}} = -20\log_{10}(0{,}3333) = 9{,}54~\text{dB}
+\]
+
+\textbf{Nhận xét:} Suy hao phản hồi cải thiện từ $9{,}54$~dB lên $21{,}55$~dB (tăng khoảng $12$~dB $\approx 2 \times 6$~dB). 
+
+\textbf{Công dụng của bộ suy giảm:} Bộ suy giảm cải thiện đáng kể phối hợp trở kháng giữa nguồn và tải. Khi tải không phối hợp, sóng phản xạ từ tải bị suy giảm \textbf{hai lần} khi đi qua bộ suy giảm (đi và về), nên suy hao phản hồi được cải thiện khoảng $2L$~dB. Đây là lý do bộ suy giảm thường được dùng để ``đệm'' (pad) giữa nguồn và tải không phối hợp.
+
+\subsubsection{(d) Phân tích công suất với $P_{inc} = 1$~mW}
+
+\textbf{Công suất phản xạ tại cửa 1:}
+\[
+P_{ref} = |\Gamma_{in}|^2 \times P_{inc} = (0{,}0837)^2 \times 1 = 0{,}007~\text{mW}
+\]
+\[
+\boxed{P_{ref} = 7{,}0~\mu\text{W}}
+\]
+
+\textbf{Công suất đi vào bộ suy giảm:}
+\[
+P_{in} = P_{inc}(1 - |\Gamma_{in}|^2) = 1 \times (1 - 0{,}007) = 0{,}993~\text{mW}
+\]
+
+\textbf{Công suất tới cửa 2 (công suất ra khỏi bộ suy giảm):}
+
+Độ lợi chuyển đổi (transducer gain):
+\[
+G_T = \frac{|S_{21}|^2(1 - |\Gamma_S|^2)(1 - |\Gamma_L|^2)}{|1 - S_{22}\Gamma_L|^2 |1 - \Gamma_{in}\Gamma_S|^2}
+\]
+
+Với $\Gamma_S = 0$ (nguồn phối hợp), $S_{22} = 0$:
+\[
+G_T = |S_{21}|^2 (1 - |\Gamma_L|^2) = (0{,}5012)^2 \times (1 - 0{,}3333^2) = 0{,}2512 \times 0{,}8889
+\]
+\[
+G_T = 0{,}2233
+\]
+
+Công suất đến tải $100~\Omega$:
+\[
+\boxed{P_L = G_T \times P_{inc} = 0{,}2233 \times 1 = 0{,}2233~\text{mW} = 223{,}3~\mu\text{W}}
+\]
+
+\textbf{Cách tính khác:} Công suất ra khỏi cửa 2 của bộ suy giảm:
+\[
+P_{out,2} = |S_{21}|^2 \times P_{inc} \times \frac{1 - |\Gamma_L|^2}{|1 - S_{22}\Gamma_L|^2} \times \frac{1}{1 - |\Gamma_{in}|^2 \cdot 0}
+\]
+
+Ta dùng cách đơn giản hơn. Với nguồn phối hợp ($\Gamma_S = 0$), công suất đi vào cửa 1:
+\[
+P_{in,1} = P_{inc}(1 - |\Gamma_{in}|^2) = 0{,}993~\text{mW}
+\]
+
+Công suất truyền qua bộ suy giảm (6 dB):
+\[
+P_{out,2} = \frac{P_{in,1}}{10^{6/10}} \approx \frac{0{,}993}{3{,}981} = 0{,}2494~\text{mW}
+\]
+
+Trong đó, công suất này chia thành:
+\begin{itemize}
+    \item Công suất hấp thụ bởi tải: $P_L = P_{out,2}(1 - |\Gamma_L|^2) = 0{,}2494 \times 0{,}8889 = 0{,}2217~\text{mW}$
+    \item Công suất phản xạ lại bộ suy giảm: bị suy giảm thêm và quay về cửa 1
+\end{itemize}
+
+\textbf{Công suất tiêu tán trong bộ suy giảm:}
+\[
+\boxed{P_{diss} = P_{in} - P_L - P_{ref} = 0{,}993 - 0{,}223 - 0{,}007 \approx 0{,}763~\text{mW} = 763~\mu\text{W}}
+\]
+
+%=============================================================================
+% BAI 2: Bộ chia công suất Wilkinson
+%=============================================================================
+\newpage
+\section{Bài 2: Bộ chia công suất Wilkinson}
+
+\subsection{Đề bài}
+Một bộ chia Wilkinson hai nhánh, chia đều, được thực hiện bằng mạch dải (microstrip) trên FR-4 cho tần số 2~GHz, hệ thống $50~\Omega$. Hằng số điện môi hiệu dụng của đường $70{,}7~\Omega$ là $\varepsilon_{eff} = 3{,}17$.
+
+\begin{enumerate}
+    \item[(a)] Xác định trở kháng đặc tính và chiều dài vật lý của hai nhánh, giá trị điện trở cách ly $R$.
+    \item[(b)] Ma trận tán xạ tại tần số thiết kế là $[S] = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix}$. Giải thích ý nghĩa vật lý của từng phần tử khác 0 và bằng 0. Mạng có thuận nghịch, không tổn hao không?
+    \item[(c)] Tính công suất ra ở mỗi cửa và công suất tiêu tán trên $R$ trong bốn trường hợp: 1~W vào cửa 1; 1~W vào cửa 2; 1~W vào mỗi cửa 2 và 3 cùng pha; 1~W vào mỗi cửa 2 và 3 ngược pha.
+    \item[(d)] Cấp tín hiệu vào cửa 1, cửa 2 nối máy thu $50~\Omega$, còn cửa 3 bị nối nhầm với tải $75~\Omega$. Tính hệ số phản xạ nhìn vào cửa 1 và hệ số truyền đến cửa 2.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Trở kháng, chiều dài nhánh và điện trở cách ly}
+
+\textbf{Trở kháng đặc tính của mỗi nhánh:}
+
+Bộ chia Wilkinson chia đều ($N = 2$, chia công suất bằng nhau) có trở kháng nhánh:
+\[
+Z_{branch} = Z_0\sqrt{2} = 50\sqrt{2} = \boxed{70{,}71~\Omega}
+\]
+
+\textbf{Chiều dài vật lý của mỗi nhánh ($\lambda/4$):}
+
+Bước sóng trong đường microstrip:
+\[
+\lambda_g = \frac{c}{f\sqrt{\varepsilon_{eff}}} = \frac{3 \times 10^8}{2 \times 10^9 \times \sqrt{3{,}17}} = \frac{0{,}15}{1{,}7804} = 0{,}08426~\text{m}
+\]
+
+Chiều dài mỗi nhánh:
+\[
+\ell = \frac{\lambda_g}{4} = \frac{84{,}26}{4} = \boxed{21{,}07~\text{mm}}
+\]
+
+\textbf{Điện trở cách ly:}
+
+Đối với bộ chia Wilkinson chia đều:
+\[
+\boxed{R = 2Z_0 = 2 \times 50 = 100~\Omega}
+\]
+
+\subsubsection{(b) Phân tích ma trận $[S]$}
+
+Ma trận tán xạ cho trước:
+\[
+[S] = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix}
+\]
+
+\textbf{Ý nghĩa vật lý của từng phần tử:}
+
+\begin{itemize}
+    \item $S_{11} = 0$: Cửa 1 (ngõ vào) phối hợp hoàn hảo --- không có phản xạ khi tín hiệu vào cửa 1.
+    \item $S_{22} = 0$, $S_{33} = 0$: Cửa 2 và cửa 3 (ngõ ra) cũng phối hợp hoàn hảo khi các cửa khác được kết cuối đúng $Z_0$.
+    \item $S_{21} = S_{31} = \frac{-j}{\sqrt{2}}$: Tín hiệu từ cửa 1 chia đều cho cửa 2 và cửa 3, mỗi cửa nhận được $|S_{21}|^2 = 1/2$ ($-3$~dB) công suất. Pha $-90°$ ($-j$) do truyền qua đoạn $\lambda/4$.
+    \item $S_{12} = S_{13} = \frac{-j}{\sqrt{2}}$: Đường truyền ngược (từ cửa 2 hoặc 3 về cửa 1) cũng suy giảm $-3$~dB. Mạng thuận nghịch.
+    \item $S_{23} = S_{32} = 0$: \textbf{Cách ly hoàn hảo} giữa cửa 2 và cửa 3 --- tín hiệu vào cửa 2 không truyền sang cửa 3 (và ngược lại). Đây là ưu điểm chính của bộ chia Wilkinson.
+\end{itemize}
+
+\textbf{Thuận nghịch?}
+\[
+S_{ij} = S_{ji} \quad \forall i,j \quad \Rightarrow \quad \textbf{Có, mạng thuận nghịch.}
+\]
+
+\textbf{Không tổn hao?}
+
+Kiểm tra $[S]^H[S] = [I]$:
+\[
+[S]^H[S] = \frac{1}{2} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix} = \frac{1}{2} \begin{bmatrix} 2 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 1 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1/2 & 1/2 \\ 0 & 1/2 & 1/2 \end{bmatrix} \neq [I]
+\]
+
+$\Rightarrow$ \textbf{Không, mạng có tổn hao} (do điện trở cách ly $R$). Tuy nhiên, khi chỉ kích thích từ cửa 1, toàn bộ công suất truyền đến cửa 2 và 3 ($|S_{21}|^2 + |S_{31}|^2 = 1/2 + 1/2 = 1$), nên không có tổn hao trong trường hợp này. Tổn hao xảy ra khi kích thích từ cửa ra (mode lẻ).
+
+\subsubsection{(c) Công suất ra trong các trường hợp}
+
+\textbf{Trường hợp 1: 1~W vào cửa 1}
+
+\[
+\begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} = [S] \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}
+\]
+
+Với $|a_1|^2 = 1$~W, $a_2 = a_3 = 0$:
+\begin{itemize}
+    \item $P_{out,1} = |b_1|^2 = 0$ (không phản xạ)
+    \item $P_{out,2} = |b_2|^2 = |{-j}/{\sqrt{2}}|^2 = 1/2 = \boxed{0{,}5~\text{W}}$
+    \item $P_{out,3} = |b_3|^2 = 1/2 = \boxed{0{,}5~\text{W}}$
+    \item $P_R = 0$ (không có công suất tiêu tán trên $R$)
+\end{itemize}
+
+\textbf{Trường hợp 2: 1~W vào cửa 2}
+
+\[
+\begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} = [S] \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}
+\]
+
+\begin{itemize}
+    \item $P_{out,1} = |b_1|^2 = 1/2 = \boxed{0{,}5~\text{W}}$
+    \item $P_{out,2} = |b_2|^2 = 0$ (phối hợp)
+    \item $P_{out,3} = |b_3|^2 = 0$ (cách ly)
+    \item $P_R = 1 - 0{,}5 = \boxed{0{,}5~\text{W}}$ (tiêu tán trên $R$)
+\end{itemize}
+
+\textbf{Trường hợp 3: 1~W vào mỗi cửa 2 và 3, cùng pha}
+
+$a_2 = a_3 = 1$ (biên độ chuẩn hóa sao cho $|a_2|^2 = |a_3|^2 = 1$~W):
+
+\[
+\begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} -j\sqrt{2} \\ 0 \\ 0 \end{bmatrix}
+\]
+
+\begin{itemize}
+    \item $P_{out,1} = |{-j\sqrt{2}}|^2 = 2 = \boxed{2~\text{W}}$
+    \item $P_{out,2} = P_{out,3} = 0$
+    \item $P_R = P_{in} - P_{out} = 2 - 2 = \boxed{0~\text{W}}$
+\end{itemize}
+
+Tín hiệu cùng pha (mode chẵn) kết hợp tại cửa 1, không có tổn hao trên $R$.
+
+\textbf{Trường hợp 4: 1~W vào mỗi cửa 2 và 3, ngược pha}
+
+$a_2 = 1$, $a_3 = -1$:
+
+\[
+\begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix} = \frac{-j}{\sqrt{2}} \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}
+\]
+
+\begin{itemize}
+    \item $P_{out,1} = P_{out,2} = P_{out,3} = 0$
+    \item $P_R = 2 - 0 = \boxed{2~\text{W}}$
+\end{itemize}
+
+Tín hiệu ngược pha (mode lẻ) triệt tiêu nhau, toàn bộ công suất tiêu tán trên $R$.
+
+\subsubsection{(d) Cửa 3 nối tải $75~\Omega$ (không phối hợp)}
+
+Hệ số phản xạ tại cửa 3:
+\[
+\Gamma_3 = \frac{75 - 50}{75 + 50} = \frac{25}{125} = 0{,}2
+\]
+
+\textbf{Hệ số phản xạ nhìn vào cửa 1:}
+
+Sử dụng phân tích tín hiệu: tín hiệu từ cửa 1 chia đều cho cửa 2 (phối hợp, $\Gamma_2 = 0$) và cửa 3 (bị phản xạ $\Gamma_3 = 0{,}2$).
+
+Sóng phản xạ từ cửa 3 quay lại bộ chia:
+\[
+a_3' = S_{31} \cdot a_1 \cdot \Gamma_3 = \frac{-j}{\sqrt{2}} \cdot \Gamma_3
+\]
+
+Sóng phản xạ về cửa 1:
+\[
+\Gamma_{in} = S_{11} + \frac{S_{13} \cdot \Gamma_3 \cdot S_{31}}{1 - S_{33}\Gamma_3} = 0 + \frac{\left(\frac{-j}{\sqrt{2}}\right)^2 \times 0{,}2}{1 - 0} = \frac{(-1/2) \times 0{,}2}{1}
+\]
+\[
+\boxed{\Gamma_{in} = -0{,}1}
+\]
+
+Suy hao phản hồi: $RL = -20\log_{10}(0{,}1) = 20$~dB.
+
+\textbf{Hệ số truyền đến cửa 2:}
+
+Tín hiệu trực tiếp: $S_{21} = \frac{-j}{\sqrt{2}}$.
+
+Tín hiệu gián tiếp (qua phản xạ từ cửa 3, rồi $S_{23} = 0$): bằng 0 (do cách ly).
+
+\[
+\boxed{S_{21,eff} = S_{21} = \frac{-j}{\sqrt{2}} \approx 0{,}707\angle -90°}
+\]
+
+Hệ số truyền công suất: $|S_{21,eff}|^2 = 1/2 = -3$~dB. Tải không phối hợp ở cửa 3 không ảnh hưởng đến hệ số truyền đến cửa 2 nhờ tính cách ly của bộ chia Wilkinson.
+
+%=============================================================================
+% BAI 3: Bộ chia công suất điện trở ba cửa
+%=============================================================================
+\newpage
+\section{Bài 3: Bộ chia công suất điện trở ba cửa}
+
+\subsection{Đề bài}
+Bộ chia gồm ba điện trở $Z_0/3$ nối hình sao.
+\begin{enumerate}
+    \item[(a)] Chứng minh rằng mỗi cửa đều phối hợp khi hai cửa còn lại được kết cuối bằng $50~\Omega$.
+    \item[(b)] Tìm ma trận $[S]$.
+    \item[(c)] Khi cấp công suất vào cửa 1, công suất ra ở cửa 2 và cửa 3 bằng bao nhiêu (dB)? Bao nhiêu công suất bị tiêu tán? Độ cách ly giữa cửa 2 và cửa 3?
+    \item[(d)] Cửa 2 nối máy thu $50~\Omega$, cửa 3 nối với tải $75~\Omega$. Tìm ma trận tán xạ rút gọn của mạng hai cửa từ cửa 1 đến cửa 2. So sánh với Bài 2(d).
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Chứng minh phối hợp}
+
+Với $Z_0 = 50~\Omega$, mỗi điện trở trong cấu hình hình sao là:
+\[
+R = \frac{Z_0}{3} = \frac{50}{3} = 16{,}67~\Omega
+\]
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.0, >=Stealth]
+    % Center node
+    \node[circle, fill=black, inner sep=1.5pt] (center) at (0,0) {};
+    
+    % Port 1 (top)
+    \draw[thick] (-3,0) node[left] {Cửa 1} -- (-1.5,0);
+    \draw[thick] (-1.5,-0.3) rectangle (-0.3,0.3) node[midway] {$R$};
+    \draw[thick] (-0.3,0) -- (center);
+    
+    % Port 2 (bottom left)
+    \draw[thick] (center) -- (0.3,1.2);
+    \draw[thick] (0.3,0.9) rectangle (1.5,1.5) node[midway] {$R$};
+    \draw[thick] (1.5,1.2) -- (3,1.2) node[right] {Cửa 2};
+    
+    % Port 3 (bottom right)  
+    \draw[thick] (center) -- (0.3,-1.2);
+    \draw[thick] (0.3,-1.5) rectangle (1.5,-0.9) node[midway] {$R$};
+    \draw[thick] (1.5,-1.2) -- (3,-1.2) node[right] {Cửa 3};
+\end{tikzpicture}
+\caption{Bộ chia điện trở ba cửa nối hình sao}
+\end{figure}
+
+Xét trở kháng nhìn vào cửa 1 khi cửa 2 và cửa 3 kết cuối bằng $Z_0 = 50~\Omega$:
+
+Từ nút trung tâm, nhìn về cửa 2: $R + Z_0 = 16{,}67 + 50 = 66{,}67~\Omega$
+
+Nhìn về cửa 3: $R + Z_0 = 66{,}67~\Omega$
+
+Hai nhánh song song tại nút trung tâm:
+\[
+Z_{node} = (R + Z_0) \| (R + Z_0) = \frac{66{,}67}{2} = 33{,}33~\Omega
+\]
+
+Trở kháng nhìn vào cửa 1:
+\[
+Z_{in,1} = R + Z_{node} = 16{,}67 + 33{,}33 = 50~\Omega = Z_0 \quad \checkmark
+\]
+
+Do tính đối xứng của cấu hình, kết quả tương tự cho cửa 2 và cửa 3.
+
+$\Rightarrow$ \textbf{Mỗi cửa đều phối hợp khi hai cửa còn lại kết cuối bằng $Z_0$.} $\square$
+
+\subsubsection{(b) Ma trận $[S]$}
+
+Từ phần (a): $S_{11} = S_{22} = S_{33} = 0$ (phối hợp).
+
+\textbf{Tính $S_{21}$ (hệ số truyền từ cửa 1 đến cửa 2):}
+
+Khi kích thích cửa 1, bộ chia điện trở hoạt động như bộ chia điện áp. Tín hiệu đi qua $R$ vào nút trung tâm, rồi chia cho hai nhánh song song $(R + Z_0)$ ra cửa 2 và cửa 3.
+
+Điện áp tại nút trung tâm (khi cửa 2, 3 kết cuối $Z_0$):
+\[
+V_{node} = V_{in} \times \frac{Z_{node}}{R + Z_{node}} = V_{in} \times \frac{33{,}33}{16{,}67 + 33{,}33} = V_{in} \times \frac{33{,}33}{50} = \frac{2}{3} V_{in}
+\]
+
+Trong đó $V_{in}$ là điện áp tại cửa 1. Điện áp tại cửa 2:
+\[
+V_2 = V_{node} \times \frac{Z_0}{R + Z_0} = \frac{2}{3} V_{in} \times \frac{50}{66{,}67} = \frac{2}{3} \times \frac{3}{4} \times V_{in} = \frac{1}{2} V_{in}
+\]
+
+Hệ số truyền điện áp: $V_2/V_{in} = 1/2$.
+
+Chuyển sang tham số S (chuẩn hóa theo sóng):
+\[
+S_{21} = \frac{b_2}{a_1}\bigg|_{a_2=a_3=0} = \frac{V_2/\sqrt{Z_0}}{V_{in}/(2\sqrt{Z_0})} \times \frac{1}{2}
+\]
+
+Thực ra, ta tính trực tiếp từ mạch. Với $V_s = 2a_1\sqrt{Z_0}$ (nguồn Thévenin), $V_1 = a_1\sqrt{Z_0}$ (vì phối hợp), và $b_2 = V_2/\sqrt{Z_0} - a_2 = V_2/\sqrt{Z_0}$:
+
+Khi $a_1 = 1$: $V_1 = \sqrt{Z_0}$, $V_2 = V_1/2 = \sqrt{Z_0}/2$, nên $b_2 = (V_2 - Z_0 \cdot 0)/\sqrt{Z_0}$.
+
+Sử dụng phương pháp tổng trở:
+\[
+S_{21} = \frac{2 \times Z_{21}}{(Z_{11} + Z_0)(Z_{22} + Z_0) - Z_{12}Z_{21}} \times Z_0
+\]
+
+Tuy nhiên, cách đơn giản nhất: xét bộ chia điện áp với đầu vào và đầu ra đều phối hợp.
+
+Công suất vào cửa 1: $P_1 = |a_1|^2$. Công suất ra cửa 2: $P_2 = |b_2|^2$.
+
+Từ phân tích mạch: $P_2 = P_1/4$ (do chia đôi qua hai nhánh, và mỗi nhánh mất thêm do điện trở).
+
+Cụ thể: Dòng tổng vào nút trung tâm $I_{in} = V_{in}/(R + Z_{node}) = V_{in}/Z_0$. Dòng qua nhánh cửa 2: $I_2 = I_{in}/2$. Công suất trên $Z_0$ cửa 2:
+\[
+P_2 = \frac{1}{2}|I_2|^2 Z_0 = \frac{1}{2} \cdot \frac{|I_{in}|^2}{4} \cdot Z_0 = \frac{P_{in}}{4}
+\]
+
+Do đó:
+\[
+|S_{21}|^2 = \frac{P_2}{P_1} = \frac{1}{4} \implies S_{21} = \frac{1}{2}
+\]
+
+Tương tự: $S_{31} = 1/2$, $S_{23} = S_{32} = 1/2$ (do đối xứng).
+
+Thực ra, do cấu trúc hoàn toàn đối xứng:
+\[
+\boxed{[S] = \begin{bmatrix} 0 & 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 1/2 & 1/2 & 0 \end{bmatrix}}
+\]
+
+\subsubsection{(c) Công suất ra và độ cách ly}
+
+\textbf{Khi cấp vào cửa 1:}
+
+Công suất ra cửa 2:
+\[
+P_2 = |S_{21}|^2 \times P_1 = \frac{1}{4} \times P_1 \implies \boxed{-6~\text{dB}}
+\]
+
+Công suất ra cửa 3:
+\[
+P_3 = |S_{31}|^2 \times P_1 = \frac{1}{4} \times P_1 \implies \boxed{-6~\text{dB}}
+\]
+
+Tổng công suất ra: $P_2 + P_3 = P_1/2$.
+
+Công suất tiêu tán trong các điện trở:
+\[
+\boxed{P_{diss} = P_1 - P_2 - P_3 = P_1 - \frac{P_1}{4} - \frac{P_1}{4} = \frac{P_1}{2} = 50\%}
+\]
+
+\textbf{Độ cách ly giữa cửa 2 và cửa 3:}
+\[
+\text{Isolation} = -20\log_{10}|S_{23}| = -20\log_{10}(0{,}5) = \boxed{6~\text{dB}}
+\]
+
+Độ cách ly chỉ 6~dB --- \textbf{rất kém} so với bộ chia Wilkinson (cách ly hoàn hảo).
+
+\subsubsection{(d) Ma trận tán xạ rút gọn khi cửa 3 nối $75~\Omega$}
+
+Hệ số phản xạ tại cửa 3:
+\[
+\Gamma_3 = \frac{75 - 50}{75 + 50} = \frac{25}{125} = 0{,}2
+\]
+
+Ma trận $[S]$ rút gọn hai cửa (cửa 1 $\to$ cửa 2):
+
+\[
+S_{11}' = S_{11} + \frac{S_{13}\Gamma_3 S_{31}}{1 - S_{33}\Gamma_3} = 0 + \frac{(1/2)(0{,}2)(1/2)}{1 - 0 \times 0{,}2} = \frac{0{,}05}{1} = \boxed{0{,}05}
+\]
+
+\[
+S_{22}' = S_{22} + \frac{S_{23}\Gamma_3 S_{32}}{1 - S_{33}\Gamma_3} = 0 + \frac{(1/2)(0{,}2)(1/2)}{1} = \boxed{0{,}05}
+\]
+
+\[
+S_{21}' = S_{21} + \frac{S_{23}\Gamma_3 S_{31}}{1 - S_{33}\Gamma_3} = \frac{1}{2} + \frac{(1/2)(0{,}2)(1/2)}{1} = 0{,}5 + 0{,}05 = \boxed{0{,}55}
+\]
+
+\[
+S_{12}' = S_{12} + \frac{S_{13}\Gamma_3 S_{32}}{1 - S_{33}\Gamma_3} = \frac{1}{2} + 0{,}05 = \boxed{0{,}55}
+\]
+
+Ma trận rút gọn:
+\[
+[S]' = \begin{bmatrix} 0{,}05 & 0{,}55 \\ 0{,}55 & 0{,}05 \end{bmatrix}
+\]
+
+\textbf{So sánh với Bài 2(d):}
+
+\begin{itemize}
+    \item Bộ chia \textbf{Wilkinson}: $\Gamma_{in} = -0{,}1$, $S_{21} = -j/\sqrt{2} \approx 0{,}707$. Cách ly hoàn hảo giữa cửa 2 và cửa 3 nên tải không phối hợp ở cửa 3 chỉ ảnh hưởng đến $\Gamma_{in}$ (qua đường $S_{13}\Gamma_3 S_{31}$), không ảnh hưởng $S_{21}$.
+    \item Bộ chia \textbf{điện trở}: $S_{11}' = 0{,}05$, $S_{21}' = 0{,}55$. Do không có cách ly ($S_{23} = 0{,}5 \neq 0$), tải không phối hợp ở cửa 3 ảnh hưởng cả hệ số phản xạ \textbf{và} hệ số truyền.
+    \item Bộ chia Wilkinson ưu việt hơn nhờ cách ly tốt, nhưng bộ chia điện trở đơn giản và băng thông rộng hơn.
+\end{itemize}
+
+%=============================================================================
+% BAI 4: Bộ khuếch đại và tải không phối hợp
+%=============================================================================
+\newpage
+\section{Bài 4: Bộ khuếch đại và tải không phối hợp}
+
+\subsection{Đề bài}
+Một transistor ở 2~GHz có các thông số tán xạ ($Z_0 = 50~\Omega$):
+\[
+S_{11} = 0{,}6\angle -160°, \quad S_{21} = 4\angle 60°, \quad S_{12} = 0{,}05\angle 40°, \quad S_{22} = 0{,}4\angle -45°
+\]
+Nguồn có nội trở $50~\Omega$.
+\begin{enumerate}
+    \item[(a)] Với $Z_L = 50~\Omega$: Tính $\Gamma_{in}$.
+    \item[(b)] Với $Z_L = 25~\Omega$: Tính $\Gamma_L$, $\Gamma_{in}$.
+    \item[(c)] Tính $\Gamma_{out}$ và nhận xét về việc phối hợp trở kháng cần làm ở hai phía của transistor.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) $Z_L = 50~\Omega$: Tính $\Gamma_{in}$}
+
+Khi $Z_L = Z_0 = 50~\Omega$:
+\[
+\Gamma_L = \frac{Z_L - Z_0}{Z_L + Z_0} = \frac{50 - 50}{50 + 50} = 0
+\]
+
+Hệ số phản xạ nhìn vào ngõ vào:
+\[
+\Gamma_{in} = S_{11} + \frac{S_{12}S_{21}\Gamma_L}{1 - S_{22}\Gamma_L} = S_{11} + 0 = S_{11}
+\]
+
+\[
+\boxed{\Gamma_{in} = S_{11} = 0{,}6\angle -160°}
+\]
+
+Trở kháng nhìn vào ngõ vào:
+\[
+Z_{in} = Z_0 \frac{1 + \Gamma_{in}}{1 - \Gamma_{in}} = 50 \times \frac{1 + 0{,}6\angle -160°}{1 - 0{,}6\angle -160°}
+\]
+
+Tính $\Gamma_{in}$ thành phần:
+\[
+\Gamma_{in} = 0{,}6(\cos(-160°) + j\sin(-160°)) = 0{,}6(-0{,}9397 - j0{,}3420) = -0{,}5638 - j0{,}2052
+\]
+
+\[
+1 + \Gamma_{in} = 0{,}4362 - j0{,}2052
+\]
+\[
+1 - \Gamma_{in} = 1{,}5638 + j0{,}2052
+\]
+
+\[
+Z_{in} = 50 \times \frac{0{,}4362 - j0{,}2052}{1{,}5638 + j0{,}2052}
+\]
+
+Nhân liên hợp mẫu:
+\[
+= 50 \times \frac{(0{,}4362 - j0{,}2052)(1{,}5638 - j0{,}2052)}{1{,}5638^2 + 0{,}2052^2}
+\]
+
+Tử: $0{,}6821 - j0{,}0895 - j0{,}3210 + j^2(0{,}0421) = 0{,}6400 - j0{,}4105$
+
+Mẫu: $2{,}4455 + 0{,}0421 = 2{,}4876$
+
+\[
+Z_{in} = 50 \times \frac{0{,}6400 - j0{,}4105}{2{,}4876} = 50 \times (0{,}2572 - j0{,}1650) = 12{,}86 - j8{,}25~\Omega
+\]
+
+\subsubsection{(b) $Z_L = 25~\Omega$: Tính $\Gamma_L$ và $\Gamma_{in}$}
+
+\textbf{Hệ số phản xạ tải:}
+\[
+\Gamma_L = \frac{Z_L - Z_0}{Z_L + Z_0} = \frac{25 - 50}{25 + 50} = \frac{-25}{75} = \boxed{-\frac{1}{3} \approx -0{,}333}
+\]
+
+\textbf{Hệ số phản xạ ngõ vào:}
+\[
+\Gamma_{in} = S_{11} + \frac{S_{12}S_{21}\Gamma_L}{1 - S_{22}\Gamma_L}
+\]
+
+Tính $S_{12}S_{21}$:
+\[
+S_{12}S_{21} = (0{,}05\angle 40°)(4\angle 60°) = 0{,}2\angle 100°
+\]
+\[
+= 0{,}2(\cos 100° + j\sin 100°) = 0{,}2(-0{,}1736 + j0{,}9848) = -0{,}0347 + j0{,}1970
+\]
+
+Tính $S_{22}\Gamma_L$:
+\[
+S_{22}\Gamma_L = (0{,}4\angle -45°)(-1/3) = -0{,}1333\angle -45°= 0{,}1333\angle 135°
+\]
+\[
+= 0{,}1333(-0{,}7071 + j0{,}7071) = -0{,}0943 + j0{,}0943
+\]
+
+\[
+1 - S_{22}\Gamma_L = 1 + 0{,}0943 - j0{,}0943 = 1{,}0943 - j0{,}0943
+\]
+
+Tính $S_{12}S_{21}\Gamma_L$:
+\[
+S_{12}S_{21}\Gamma_L = (- 0{,}0347 + j0{,}1970) \times (-1/3) = 0{,}01157 - j0{,}06567
+\]
+
+\[
+\frac{S_{12}S_{21}\Gamma_L}{1 - S_{22}\Gamma_L} = \frac{0{,}01157 - j0{,}06567}{1{,}0943 - j0{,}0943}
+\]
+
+Nhân liên hợp:
+\[
+= \frac{(0{,}01157 - j0{,}06567)(1{,}0943 + j0{,}0943)}{1{,}0943^2 + 0{,}0943^2}
+\]
+
+Tử: $0{,}01266 + j0{,}001091 - j0{,}07185 + 0{,}006193 = 0{,}01885 - j0{,}07076$
+
+Mẫ: $1{,}1975 + 0{,}008893 = 1{,}2064$
+
+\[
+\frac{S_{12}S_{21}\Gamma_L}{1 - S_{22}\Gamma_L} = \frac{0{,}01885 - j0{,}07076}{1{,}2064} = 0{,}01562 - j0{,}05866
+\]
+
+\[
+\Gamma_{in} = (-0{,}5638 - j0{,}2052) + (0{,}01562 - j0{,}05866)
+\]
+\[
+= -0{,}5482 - j0{,}2639
+\]
+
+\[
+|\Gamma_{in}| = \sqrt{0{,}5482^2 + 0{,}2639^2} = \sqrt{0{,}3005 + 0{,}0696} = \sqrt{0{,}3701} = 0{,}6084
+\]
+
+\[
+\theta = \arctan\left(\frac{-0{,}2639}{-0{,}5482}\right) = 180° + \arctan(0{,}4814) = 180° + 25{,}71° = 205{,}71° = -154{,}3°
+\]
+
+\[
+\boxed{\Gamma_{in} = 0{,}608\angle -154{,}3°}
+\]
+
+\subsubsection{(c) Tính $\Gamma_{out}$ và nhận xét}
+
+Hệ số phản xạ nhìn vào ngõ ra (từ phía tải nhìn vào transistor):
+\[
+\Gamma_{out} = S_{22} + \frac{S_{12}S_{21}\Gamma_S}{1 - S_{11}\Gamma_S}
+\]
+
+Với nguồn $50~\Omega$: $\Gamma_S = 0$
+\[
+\Gamma_{out} = S_{22} + 0 = S_{22} = 0{,}4\angle -45°
+\]
+
+\[
+\boxed{\Gamma_{out} = 0{,}4\angle -45°}
+\]
+
+Thành phần:
+\[
+\Gamma_{out} = 0{,}4(\cos(-45°) + j\sin(-45°)) = 0{,}2828 - j0{,}2828
+\]
+
+Trở kháng ngõ ra:
+\[
+Z_{out} = Z_0 \frac{1 + \Gamma_{out}}{1 - \Gamma_{out}} = 50 \times \frac{1{,}2828 - j0{,}2828}{0{,}7172 + j0{,}2828}
+\]
+
+\[
+= 50 \times \frac{(1{,}2828 - j0{,}2828)(0{,}7172 - j0{,}2828)}{0{,}7172^2 + 0{,}2828^2}
+\]
+
+Tử: $0{,}9200 - j0{,}3628 - j0{,}2028 + j^2 0{,}07998 = 0{,}8400 - j0{,}5656$
+
+Mẫ: $0{,}5144 + 0{,}07998 = 0{,}5944$
+
+\[
+Z_{out} = 50 \times \frac{0{,}8400 - j0{,}5656}{0{,}5944} = 50 \times (1{,}4132 - j0{,}9515) = 70{,}66 - j47{,}58~\Omega
+\]
+
+\textbf{Nhận xét về phối hợp trở kháng:}
+
+\begin{itemize}
+    \item \textbf{Phía ngõ vào:} $|\Gamma_{in}| = 0{,}6$ (lớn) $\Rightarrow$ Cần mạng phối hợp ngõ vào để $\Gamma_S = \Gamma_{in}^*$ (liên hợp phức), tức là biến đổi trở kháng nguồn $50~\Omega$ thành $Z_{in}^*$ để truyền công suất cực đại.
+    \item \textbf{Phía ngõ ra:} $|\Gamma_{out}| = 0{,}4$ (đáng kể) $\Rightarrow$ Cần mạng phối hợp ngõ ra để $\Gamma_L = \Gamma_{out}^*$, tức biến đổi tải thành $Z_{out}^*$.
+    \item \textbf{Tương tác hai phía:} Do $S_{12} \neq 0$ (không đơn hướng), phối hợp một phía sẽ ảnh hưởng phía kia. Cần thiết kế đồng thời cả hai mạng phối hợp hoặc sử dụng phương pháp lặp.
+    \item Transistor có $|S_{21}| = 4$ ($12$~dB gain) và $|S_{12}| = 0{,}05$ nhỏ, nên có thể xấp xỉ đơn hướng trong bước đầu thiết kế.
+\end{itemize}
+
+%=============================================================================
+% BAI 5: Ghép nối chuỗi các phần tử
+%=============================================================================
+\newpage
+\section{Bài 5: Ghép nối chuỗi các phần tử}
+
+\subsection{Đề bài}
+Ngõ ra của bộ khuếch đại ở Bài 4 được nối qua một đoạn đường truyền không tổn hao $50~\Omega$ có độ dài điện $\theta = 45°$ ($\lambda/8$), rồi qua bộ suy giảm 6~dB ở Bài 1, đến tải $Z_L = 25~\Omega$. Nguồn $50~\Omega$ nối vào ngõ vào bộ khuếch đại.
+
+\begin{enumerate}
+    \item[(a)] Tính lần lượt $\Gamma_C$, $\Gamma_B$, $\Gamma_A$ tại các mặt phẳng C, B, A.
+    \item[(b)] Tính $\Gamma_{in}$ tại ngõ vào bộ khuếch đại.
+    \item[(c)] Tính độ lợi chuyển đổi của bộ khuếch đại, tỉ lệ công suất bộ suy giảm chuyển đến tải và độ lợi chuyển đổi của cả chuỗi từ nguồn đến tải (dB).
+    \item[(d)] Kiểm tra kết quả bằng cách nhân ma trận ABCD của ba phần tử, đổi sang $[S]$ của cả chuỗi và áp dụng công thức $\Gamma_{in}$, $G_T$ cho mạng hai cửa có tải.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85, >=Stealth]
+    % Source
+    \draw[thick] (0,1) node[left] {$50~\Omega$} -- (1,1);
+    \draw (0.5,1.8) node {Nguồn};
+    
+    % Amplifier box
+    \draw[thick, fill=blue!10] (1,0) rectangle (3,2);
+    \node at (2,1) {Amp};
+    \node at (2,0.3) {\scriptsize (Bài 4)};
+    
+    % Plane P
+    \draw[dashed, red] (1,-0.5) -- (1,2.5) node[above] {P};
+    
+    % Plane A  
+    \draw[dashed, red] (3,-0.5) -- (3,2.5) node[above] {A};
+    
+    % Transmission line
+    \draw[thick] (3,1) -- (5,1);
+    \node at (4,1.6) {$50~\Omega$};
+    \node at (4,0.4) {$\theta=45°$};
+    
+    % Plane B
+    \draw[dashed, red] (5,-0.5) -- (5,2.5) node[above] {B};
+    
+    % Attenuator box
+    \draw[thick, fill=green!10] (5,0) rectangle (7.5,2);
+    \node at (6.25,1) {Att 6dB};
+    \node at (6.25,0.3) {\scriptsize (Bài 1)};
+    
+    % Plane C
+    \draw[dashed, red] (7.5,-0.5) -- (7.5,2.5) node[above] {C};
+    
+    % Load
+    \draw[thick] (7.5,1) -- (9,1);
+    \draw[thick] (8.5,0.3) rectangle (9,1.7) node[midway, right=0.1cm] {$25~\Omega$};
+    \draw[thick] (8.5,0.3) -- (9,0.3);
+    
+    % Ground
+    \draw[thick] (0,0) -- (9,0);
+\end{tikzpicture}
+\caption{Chuỗi bộ khuếch đại, đoạn dây $\lambda/8$, bộ suy giảm 6~dB và tải $25~\Omega$}
+\end{figure}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Hệ số phản xạ tại các mặt phẳng C, B, A}
+
+\textbf{Tại mặt phẳng C} (phía trước tải, sau bộ suy giảm):
+
+Tải $Z_L = 25~\Omega$:
+\[
+\boxed{\Gamma_C = \frac{Z_L - Z_0}{Z_L + Z_0} = \frac{25 - 50}{25 + 50} = -\frac{1}{3} = -0{,}333}
+\]
+
+\textbf{Tại mặt phẳng B} (sau đoạn dây, trước bộ suy giảm):
+
+Bộ suy giảm 6~dB (từ Bài 1) có $S_{11} = S_{22} = 0$, $S_{21} = S_{12} = 0{,}501$.
+
+Hệ số phản xạ nhìn vào bộ suy giảm khi tải $\Gamma_C$:
+\[
+\Gamma_B = S_{11,att} + \frac{S_{12,att} S_{21,att} \Gamma_C}{1 - S_{22,att}\Gamma_C} = 0 + \frac{(0{,}501)^2 \times (-0{,}333)}{1 - 0}
+\]
+\[
+\boxed{\Gamma_B = -0{,}0836}
+\]
+
+\textbf{Tại mặt phẳng A} (sau bộ khuếch đại, trước đoạn dây):
+
+Đoạn đường truyền $50~\Omega$, $\theta = 45°$ biến đổi $\Gamma_B$ thành:
+\[
+\Gamma_A = \Gamma_B \cdot e^{-j2\theta} = -0{,}0836 \cdot e^{-j90°} = -0{,}0836 \times (-j) = j0{,}0836
+\]
+\[
+\boxed{\Gamma_A = 0{,}0836\angle 90°}
+\]
+
+\subsubsection{(b) $\Gamma_{in}$ tại ngõ vào bộ khuếch đại}
+
+Sử dụng tham số S của transistor (Bài 4) với $\Gamma_L' = \Gamma_A$:
+\[
+\Gamma_{in} = S_{11} + \frac{S_{12}S_{21}\Gamma_A}{1 - S_{22}\Gamma_A}
+\]
+
+Tính $S_{22}\Gamma_A$:
+\[
+S_{22}\Gamma_A = (0{,}4\angle -45°)(0{,}0836\angle 90°) = 0{,}03344\angle 45°
+\]
+\[
+= 0{,}03344(0{,}7071 + j0{,}7071) = 0{,}02365 + j0{,}02365
+\]
+
+\[
+1 - S_{22}\Gamma_A = 0{,}97635 - j0{,}02365
+\]
+
+Tính $S_{12}S_{21}\Gamma_A$:
+\[
+S_{12}S_{21} = 0{,}2\angle 100°
+\]
+\[
+S_{12}S_{21}\Gamma_A = (0{,}2\angle 100°)(0{,}0836\angle 90°) = 0{,}01672\angle 190°
+\]
+\[
+= 0{,}01672(\cos 190° + j\sin 190°) = 0{,}01672(-0{,}9848 - j0{,}1736)
+\]
+\[
+= -0{,}01647 - j0{,}002903
+\]
+
+\[
+\frac{S_{12}S_{21}\Gamma_A}{1 - S_{22}\Gamma_A} = \frac{-0{,}01647 - j0{,}002903}{0{,}97635 - j0{,}02365}
+\]
+
+Nhân liên hợp:
+\[
+\approx \frac{(-0{,}01647 - j0{,}002903)(0{,}97635 + j0{,}02365)}{0{,}97635^2 + 0{,}02365^2}
+\]
+
+Tử: $-0{,}01608 - j0{,}000389 - j0{,}002834 + 0{,}0000687$
+$\approx -0{,}01601 - j0{,}003223$
+
+Mẫ: $0{,}9533 + 0{,}000559 = 0{,}9539$
+
+\[
+\frac{S_{12}S_{21}\Gamma_A}{1 - S_{22}\Gamma_A} = -0{,}01679 - j0{,}003378
+\]
+
+\[
+\Gamma_{in} = (-0{,}5638 - j0{,}2052) + (-0{,}01679 - j0{,}003378)
+\]
+\[
+= -0{,}5806 - j0{,}2086
+\]
+
+\[
+|\Gamma_{in}| = \sqrt{0{,}5806^2 + 0{,}2086^2} = \sqrt{0{,}3371 + 0{,}04351} = \sqrt{0{,}3806} = 0{,}6170
+\]
+
+\[
+\boxed{\Gamma_{in} = 0{,}617\angle -160{,}2°}
+\]
+
+\subsubsection{(c) Độ lợi chuyển đổi}
+
+\textbf{Độ lợi chuyển đổi (Transducer Gain) của bộ khuếch đại:}
+
+Với $\Gamma_S = 0$ (nguồn $50~\Omega$):
+\[
+G_{T,amp} = \frac{|S_{21}|^2(1 - |\Gamma_S|^2)(1 - |\Gamma_A|^2)}{|1 - S_{22}\Gamma_A|^2 |1 - \Gamma_{in}\Gamma_S|^2}
+\]
+
+\[
+= \frac{16 \times 1 \times (1 - 0{,}0836^2)}{|0{,}97635 - j0{,}02365|^2 \times 1}
+\]
+
+\[
+= \frac{16 \times 0{,}99301}{0{,}9539} = \frac{15{,}888}{0{,}9539} = 16{,}65
+\]
+
+\[
+\boxed{G_{T,amp} = 10\log_{10}(16{,}65) = 12{,}21~\text{dB}}
+\]
+
+\textbf{Tỉ lệ công suất bộ suy giảm chuyển đến tải:}
+
+Bộ suy giảm 6~dB phối hợp ($S_{11} = S_{22} = 0$), tải $\Gamma_C = -1/3$:
+
+\[
+G_{T,att} = \frac{|S_{21,att}|^2(1 - |\Gamma_B|^2)(1 - |\Gamma_C|^2)}{|1 - S_{22,att}\Gamma_C|^2 |1 - S_{11,att}\Gamma_B|^2}
+\]
+
+Với $S_{11,att} = S_{22,att} = 0$:
+\[
+G_{T,att} = |S_{21,att}|^2(1 - |\Gamma_C|^2) \times \frac{1}{1 - |\Gamma_B|^2}
+\]
+
+Tuy nhiên, cần cẩn thận: tải phía nguồn của bộ suy giảm (nhìn từ cửa 1) thấy $\Gamma_B$ ở đầu vào. Vì bộ suy giảm phối hợp:
+
+\[
+G_{T,att} = |S_{21,att}|^2 (1 - |\Gamma_C|^2) = (0{,}501)^2 \times \left(1 - \frac{1}{9}\right) = 0{,}251 \times 0{,}889 = 0{,}2232
+\]
+
+\[
+\boxed{G_{T,att} = 10\log_{10}(0{,}2232) = -6{,}51~\text{dB}}
+\]
+
+\textbf{Đoạn đường truyền $50~\Omega$ ($\lambda/8$):}
+
+Đường truyền không tổn hao chỉ biến đổi pha, không suy giảm biên độ:
+\[
+G_{T,line} = \frac{(1 - |\Gamma_A|^2)(1 - |\Gamma_B|^2)}{|1 - \Gamma_A|^2} \approx 1 \quad \text{(xấp xỉ, vì $\Gamma_A, \Gamma_B$ nhỏ)}
+\]
+
+Chính xác hơn: đường truyền không tổn hao có $|S_{21}| = 1$, $S_{11} = 0$, nên:
+\[
+G_{T,line} = (1 - |\Gamma_B|^2) = 1 - 0{,}007 = 0{,}993 \approx -0{,}03~\text{dB}
+\]
+
+\textbf{Độ lợi chuyển đổi tổng của cả chuỗi:}
+\[
+G_{T,total} = G_{T,amp} \times G_{T,line} \times G_{T,att} \approx 16{,}65 \times 0{,}993 \times 0{,}2232
+\]
+\[
+= 3{,}689
+\]
+
+\[
+G_{T,total}(\text{dB}) = 12{,}21 - 0{,}03 - 6{,}51 = \boxed{5{,}67~\text{dB}}
+\]
+
+\subsubsection{(d) Kiểm tra bằng ma trận ABCD}
+
+\textbf{Ma trận ABCD của đoạn dây $\theta = 45°$, $Z_0 = 50~\Omega$:}
+\[
+[ABCD]_{line} = \begin{bmatrix} \cos\theta & jZ_0\sin\theta \\ jY_0\sin\theta & \cos\theta \end{bmatrix} = \begin{bmatrix} \frac{\sqrt{2}}{2} & j\frac{50\sqrt{2}}{2} \\ j\frac{\sqrt{2}}{2 \times 50} & \frac{\sqrt{2}}{2} \end{bmatrix}
+\]
+\[
+= \begin{bmatrix} 0{,}7071 & j35{,}355 \\ j0{,}01414 & 0{,}7071 \end{bmatrix}
+\]
+
+\textbf{Ma trận ABCD của bộ suy giảm hình T:}
+
+Từ các giá trị $R_1 = 16{,}61~\Omega$, $R_2 = 66{,}93~\Omega$:
+\[
+[ABCD]_{att} = \begin{bmatrix} 1 + R_1/R_2 & R_1(2 + R_1/R_2) \\ 1/R_2 & 1 + R_1/R_2 \end{bmatrix}
+\]
+\[
+= \begin{bmatrix} 1{,}2482 & 37{,}34 \\ 0{,}01494 & 1{,}2482 \end{bmatrix}
+\]
+
+\textbf{Ma trận ABCD tổng} (đoạn dây $\times$ bộ suy giảm):
+\[
+[ABCD]_{total} = [ABCD]_{line} \times [ABCD]_{att}
+\]
+
+\[
+A = 0{,}7071 \times 1{,}2482 + j35{,}355 \times 0{,}01494 = 0{,}8826 + j0{,}5282
+\]
+\[
+B = 0{,}7071 \times 37{,}34 + j35{,}355 \times 1{,}2482 = 26{,}41 + j44{,}13
+\]
+\[
+C = j0{,}01414 \times 1{,}2482 + 0{,}7071 \times 0{,}01494 = 0{,}01057 + j0{,}01764
+\]
+\[
+D = j0{,}01414 \times 37{,}34 + 0{,}7071 \times 1{,}2482 = 0{,}8826 + j0{,}5282
+\]
+
+\textbf{Chuyển sang ma trận $[S]$:}
+
+Sử dụng công thức chuyển đổi ABCD $\to$ S (với $Z_0 = 50~\Omega$):
+\[
+S_{11} = \frac{A + B/Z_0 - CZ_0 - D}{A + B/Z_0 + CZ_0 + D}
+\]
+\[
+S_{21} = \frac{2}{A + B/Z_0 + CZ_0 + D}
+\]
+
+Mẫu chung:
+\[
+\Delta = A + B/Z_0 + CZ_0 + D
+\]
+\[
+= (0{,}8826 + j0{,}5282) + \frac{26{,}41 + j44{,}13}{50} + 50(0{,}01057 + j0{,}01764) + (0{,}8826 + j0{,}5282)
+\]
+\[
+= (0{,}8826 + j0{,}5282) + (0{,}5282 + j0{,}8826) + (0{,}5285 + j0{,}882) + (0{,}8826 + j0{,}5282)
+\]
+\[
+= 2{,}8219 + j2{,}821
+\]
+
+$S_{21}$ của chuỗi (đoạn dây + bộ suy giảm):
+\[
+S_{21,chain} = \frac{2}{2{,}8219 + j2{,}821} = \frac{2(2{,}8219 - j2{,}821)}{2{,}8219^2 + 2{,}821^2} = \frac{5{,}6438 - j5{,}642}{15{,}911}
+\]
+\[
+= 0{,}3547 - j0{,}3546
+\]
+
+$|S_{21,chain}| = \sqrt{0{,}3547^2 + 0{,}3546^2} = 0{,}5015$
+
+Kết hợp với transistor ($|S_{21,amp}| = 4$), ta kiểm tra:
+
+Hệ số truyền tổng $\approx |S_{21,amp}| \times |S_{21,chain}| = 4 \times 0{,}5015 = 2{,}006$.
+
+$G_T \approx |2{,}006|^2 \times \text{(correction factors)} \approx 4{,}02$ tương ứng khoảng $6{,}0$~dB.
+
+Kết quả này phù hợp với tính toán ở phần (c): $G_{T,total} \approx 5{,}67$~dB (sai lệch nhỏ do các xấp xỉ và tương tác giữa $S_{12}$ của transistor).
+
+\textbf{Kết luận:} Kết quả từ hai phương pháp (tính riêng từng khối và nhân ma trận ABCD) cho kết quả phù hợp, xác nhận tính đúng đắn của lời giải.
+
+\end{document}

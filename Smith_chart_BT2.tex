@@ -1,0 +1,758 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[english,vietnamese]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{circuits.ee.IEC, positioning, arrows.meta, calc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{steinmetz}
+\usepackage{enumitem}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{black}
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+\textbf{\large VIETNAM NATIONAL UNIVERSITY HO CHI MINH CITY}\\
+\textbf{\large HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\
+\textbf{\normalsize Faculty of Electrical and Electronics Engineering}\\
+\vspace{0.5cm}
+
+\includegraphics[width=0.25\textwidth]{img/01_logobachkhoasang.png}\\
+\vspace{0.5cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{0.5cm}
+
+\textbf{\huge Microwave Engineering}\\
+\textbf{\large EE5430}\\
+\vspace{0.3cm}
+
+\textbf{\Large Exercise Report}\\
+\vspace{0.3cm}
+
+\textbf{\LARGE Smith Chart Analysis \&\\Impedance Matching}\\
+\vspace{0.3cm}
+
+\rule{\linewidth}{0.5mm}\\
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Student:} & Vu Tien Giang - 2570188\\[0.5cm]
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{tabular}{rl}
+\textbf{Instructor:} & (HOANG MANH HA)
+\end{tabular}
+
+\vfill
+
+{\large \today}
+
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+%=============================================================================
+% BAI TAP 1
+%=============================================================================
+\section{Bài 1: Phối hợp trở kháng anten BLE bằng mạng hình L}
+
+\subsection{Đề bài}
+Trên một bo mạch BLE (Bluetooth Low Energy) làm bằng FR-4 dày 0,8~mm, chân RF của SoC được nối với anten chip bằng đường microstrip 50~$\Omega$. Đo bằng máy phân tích mạng (VNA) tại mặt phẳng chân anten, ở 2,45~GHz anten có trở kháng $Z_A = 20 - j15~\Omega$. Nhà sản xuất bố trí sẵn hai vị trí linh kiện 0402 ngay trước anten: một vị trí nối tiếp trên đường tín hiệu và một vị trí song song xuống mặt phẳng đất (qua lỗ xuyên).
+
+\begin{enumerate}[label=(\alph*)]
+    \item Dùng đồ thị Smith thiết kế mạng phối hợp hình L hai phần tử đưa $Z_A$ về 50~$\Omega$; cho cả hai cách ghép và tính giá trị $L$, $C$.
+    \item Chọn giá trị linh kiện chuẩn E24 gần nhất cho cách ghép có cuộn cảm nối tiếp và tụ song song; tính lại hệ số phản xạ, suy hao phản hồi (return loss) và VSWR thực tế đạt được.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Thiết kế mạng phối hợp hình L}
+
+\textbf{Bước 1: Chuẩn hoá trở kháng}
+
+Trở kháng chuẩn hoá của anten:
+\[
+z_A = \frac{Z_A}{Z_0} = \frac{20 - j15}{50} = 0{,}4 - j0{,}3
+\]
+
+\textbf{Bước 2: Nhận xét trên đồ thị Smith}
+
+Vẽ điểm $z_A = 0{,}4 - j0{,}3$ trên đồ thị Smith. Vì phần thực $R_A = 20 < Z_0 = 50$ (hay $r = 0{,}4 < 1$), điểm nằm bên trong vòng tròn $r = 1$. Với cấu hình mạng L gồm phần tử nối tiếp (gần tải) và phần tử song song (gần nguồn), ta cần:
+
+\begin{enumerate}
+    \item Thêm điện kháng nối tiếp $jX_s$ để di chuyển $z_A$ dọc theo vòng tròn $r$ không đổi đến khi giao với vòng tròn $g = 1$ trên đồ thị dẫn nạp.
+    \item Thêm dẫn nạp song song $jB_p$ để triệt tiêu phần ảo, đưa dẫn nạp về $y = 1$ (tức $Z = 50~\Omega$).
+\end{enumerate}
+
+\textbf{Bước 3: Tính toán giải tích}
+
+Sau phần tử nối tiếp:
+\[
+Z_1 = Z_A + jX_s = 20 + j(X_s - 15)
+\]
+
+Chuyển sang dẫn nạp:
+\[
+Y_1 = \frac{1}{Z_1} = \frac{20 - j(X_s - 15)}{20^2 + (X_s - 15)^2}
+\]
+
+Điều kiện phối hợp: $\text{Re}(Y_1) = G_0 = 1/50 = 0{,}02$~S:
+\[
+\frac{20}{400 + (X_s - 15)^2} = 0{,}02
+\]
+\[
+400 + (X_s - 15)^2 = \frac{20}{0{,}02} = 1000
+\]
+\[
+(X_s - 15)^2 = 600 \implies X_s - 15 = \pm\sqrt{600} = \pm 24{,}49
+\]
+
+\textbf{Nghiệm 1 (Cách ghép 1 --- Nối tiếp L, song song C):}
+\[
+X_{s1} = 15 + 24{,}49 = 39{,}49~\Omega \quad \text{(cuộn cảm nối tiếp)}
+\]
+
+Phần ảo của $Y_1$:
+\[
+B_1 = \text{Im}(Y_1) = \frac{-(X_{s1} - 15)}{1000} = \frac{-24{,}49}{1000} = -0{,}02449~\text{S}
+\]
+
+Dẫn nạp song song cần thêm: $B_{p1} = -B_1 = +0{,}02449$~S (tụ điện song song).
+
+Tại $f = 2{,}45$~GHz, $\omega = 2\pi \times 2{,}45 \times 10^9 = 1{,}5394 \times 10^{10}$~rad/s:
+\[
+\boxed{L_{s1} = \frac{X_{s1}}{\omega} = \frac{39{,}49}{1{,}5394 \times 10^{10}} = 2{,}57~\text{nH}}
+\]
+\[
+\boxed{C_{p1} = \frac{B_{p1}}{\omega} = \frac{0{,}02449}{1{,}5394 \times 10^{10}} = 1{,}59~\text{pF}}
+\]
+
+\textbf{Nghiệm 2 (Cách ghép 2 --- Nối tiếp C, song song L):}
+\[
+X_{s2} = 15 - 24{,}49 = -9{,}49~\Omega \quad \text{(tụ điện nối tiếp)}
+\]
+
+Phần ảo:
+\[
+B_2 = \frac{-(-9{,}49 - 15)}{1000} = \frac{24{,}49}{1000} = +0{,}02449~\text{S}
+\]
+
+Dẫn nạp song song cần thêm: $B_{p2} = -0{,}02449$~S (cuộn cảm song song).
+
+\[
+\boxed{C_{s2} = \frac{1}{\omega |X_{s2}|} = \frac{1}{1{,}5394 \times 10^{10} \times 9{,}49} = 6{,}84~\text{pF}}
+\]
+\[
+\boxed{L_{p2} = \frac{1}{\omega |B_{p2}|} = \frac{1}{1{,}5394 \times 10^{10} \times 0{,}02449} = 2{,}65~\text{nH}}
+\]
+
+\textbf{Kiểm tra cách ghép 1:}
+
+$Z_1 = 20 + j(39{,}49 - 15) = 20 + j24{,}49$
+
+$Y_1 = \frac{20 - j24{,}49}{400 + 599{,}8} = \frac{20 - j24{,}49}{1000} = 0{,}02 - j0{,}02449$
+
+$Y_{\text{total}} = 0{,}02 - j0{,}02449 + j0{,}02449 = 0{,}02$~S
+
+$Z_{\text{total}} = 1/0{,}02 = 50~\Omega$ \checkmark
+
+\subsubsection{(b) Giá trị linh kiện E24 và hiệu năng thực tế}
+
+\textbf{Chọn linh kiện chuẩn E24:}
+
+Dãy E24: 1{,}0; 1{,}1; 1{,}2; 1{,}3; 1{,}5; 1{,}6; 1{,}8; 2{,}0; 2{,}2; 2{,}4; 2{,}7; 3{,}0; ...
+
+\begin{itemize}
+    \item $L_s = 2{,}57$~nH $\to$ \textbf{E24: 2{,}7~nH} (sai lệch $+5{,}1\%$)
+    \item $C_p = 1{,}59$~pF $\to$ \textbf{E24: 1{,}6~pF} (sai lệch $+0{,}6\%$)
+\end{itemize}
+
+\textbf{Tính toán với linh kiện E24:}
+
+\[
+X_L = \omega L = 1{,}5394 \times 10^{10} \times 2{,}7 \times 10^{-9} = 41{,}56~\Omega
+\]
+\[
+B_C = \omega C = 1{,}5394 \times 10^{10} \times 1{,}6 \times 10^{-12} = 0{,}02463~\text{S}
+\]
+
+Trở kháng sau phần tử nối tiếp:
+\[
+Z_1 = (20 - j15) + j41{,}56 = 20 + j26{,}56~\Omega
+\]
+
+Dẫn nạp:
+\[
+Y_1 = \frac{20 - j26{,}56}{20^2 + 26{,}56^2} = \frac{20 - j26{,}56}{1105{,}4} = 0{,}01809 - j0{,}02403~\text{S}
+\]
+
+Sau phần tử song song:
+\[
+Y_{\text{total}} = 0{,}01809 + j(0{,}02463 - 0{,}02403) = 0{,}01809 + j0{,}00060~\text{S}
+\]
+
+\[
+Z_{\text{total}} = \frac{1}{Y_{\text{total}}} = \frac{0{,}01809 - j0{,}00060}{0{,}01809^2 + 0{,}00060^2} = \frac{0{,}01809 - j0{,}00060}{3{,}277 \times 10^{-4}} = 55{,}2 - j1{,}8~\Omega
+\]
+
+\textbf{Hệ số phản xạ:}
+\[
+\Gamma = \frac{Z_{\text{total}} - 50}{Z_{\text{total}} + 50} = \frac{5{,}2 - j1{,}8}{105{,}2 - j1{,}8}
+\]
+\[
+|\Gamma| = \frac{\sqrt{5{,}2^2 + 1{,}8^2}}{\sqrt{105{,}2^2 + 1{,}8^2}} = \frac{\sqrt{30{,}28}}{\sqrt{11070{,}3}} = \frac{5{,}50}{105{,}22} = \boxed{0{,}0523}
+\]
+
+\textbf{Suy hao phản hồi (Return Loss):}
+\[
+\text{RL} = -20\log_{10}|\Gamma| = -20\log_{10}(0{,}0523) = \boxed{25{,}6~\text{dB}}
+\]
+
+\textbf{VSWR:}
+\[
+\text{VSWR} = \frac{1 + |\Gamma|}{1 - |\Gamma|} = \frac{1{,}0523}{0{,}9477} = \boxed{1{,}11}
+\]
+
+Kết quả cho thấy với linh kiện chuẩn E24, mạch phối hợp vẫn đạt suy hao phản hồi $> 25$~dB và VSWR $\approx 1{,}11$, rất tốt cho ứng dụng BLE.
+
+%=============================================================================
+% BAI TAP 2
+%=============================================================================
+\newpage
+\section{Bài 2: Biến đổi trở kháng qua đường microstrip}
+
+\subsection{Đề bài}
+Một IC thu 2,4~GHz được hàn trên bo FR-4 ($h = 1{,}6$~mm, $\varepsilon_r = 4{,}4$). Chân RF\textsubscript{IN} của IC nối với đầu nối SMA bằng một đường microstrip 50~$\Omega$ dài 25~mm, rộng 3,0~mm, hằng số điện môi hiệu dụng $\varepsilon_{\text{eff}} = 3{,}3$. Theo datasheet, ở 2,4~GHz trở kháng vào của IC (chưa phối hợp) là $Z_{IC} = 20 - j30~\Omega$.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Tính bước sóng trên đường microstrip và chiều dài điện của đoạn dây.
+    \item Dùng đồ thị Smith xác định trở kháng mà VNA đo được tại đầu nối SMA và VSWR trên đoạn dây.
+    \item Nếu muốn điểm đo tại SMA nhìn thấy trở kháng thuần trở, cần cắt ngắn đoạn dây đến chiều dài nào gần nhất với 25~mm? Khi đó trở kháng đo được bằng bao nhiêu?
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Bước sóng và chiều dài điện}
+
+Vận tốc pha trên microstrip:
+\[
+v_p = \frac{c}{\sqrt{\varepsilon_{\text{eff}}}} = \frac{3 \times 10^8}{\sqrt{3{,}3}} = \frac{3 \times 10^8}{1{,}817} = 1{,}651 \times 10^8~\text{m/s}
+\]
+
+Bước sóng trên microstrip:
+\[
+\boxed{\lambda_g = \frac{v_p}{f} = \frac{1{,}651 \times 10^8}{2{,}4 \times 10^9} = 68{,}8~\text{mm}}
+\]
+
+Chiều dài điện:
+\[
+\beta\ell = \frac{2\pi \ell}{\lambda_g} = \frac{360^\circ \times 25}{68{,}8} = \boxed{130{,}8^\circ}
+\]
+
+hay $\ell/\lambda_g = 25/68{,}8 = 0{,}363\lambda_g$.
+
+\subsubsection{(b) Trở kháng tại SMA và VSWR}
+
+\textbf{Bước 1: Chuẩn hoá và vẽ trên đồ thị Smith}
+
+Trở kháng chuẩn hoá tại IC:
+\[
+z_{IC} = \frac{Z_{IC}}{Z_0} = \frac{20 - j30}{50} = 0{,}4 - j0{,}6
+\]
+
+Vẽ điểm $z_{IC} = 0{,}4 - j0{,}6$ trên đồ thị Smith (nửa dưới, vùng dung kháng).
+
+\textbf{Bước 2: Tính hệ số phản xạ tại tải}
+\[
+\Gamma_L = \frac{z_{IC} - 1}{z_{IC} + 1} = \frac{(0{,}4 - j0{,}6) - 1}{(0{,}4 - j0{,}6) + 1} = \frac{-0{,}6 - j0{,}6}{1{,}4 - j0{,}6}
+\]
+
+Nhân liên hợp:
+\[
+\Gamma_L = \frac{(-0{,}6 - j0{,}6)(1{,}4 + j0{,}6)}{1{,}4^2 + 0{,}6^2} = \frac{-0{,}84 + 0{,}36 - j(0{,}84 + 0{,}36) - j0{,}36}{2{,}32}
+\]
+\[
+= \frac{(-0{,}84+0{,}36) - j(0{,}36 + 0{,}84 + 0{,}36)}{2{,}32}
+\]
+
+Tính lại cẩn thận:
+\begin{align*}
+(-0{,}6 - j0{,}6)(1{,}4 + j0{,}6) &= -0{,}6 \times 1{,}4 + (-0{,}6)(j0{,}6) + (-j0{,}6)(1{,}4) + (-j0{,}6)(j0{,}6) \\
+&= -0{,}84 - j0{,}36 - j0{,}84 + 0{,}36 \\
+&= (-0{,}84 + 0{,}36) + j(-0{,}36 - 0{,}84) \\
+&= -0{,}48 - j1{,}20
+\end{align*}
+
+\[
+\Gamma_L = \frac{-0{,}48 - j1{,}20}{2{,}32} = -0{,}2069 - j0{,}5172
+\]
+
+\[
+|\Gamma_L| = \sqrt{0{,}2069^2 + 0{,}5172^2} = \sqrt{0{,}0428 + 0{,}2675} = \sqrt{0{,}3103} = 0{,}557
+\]
+
+\[
+\angle\Gamma_L = \arctan\left(\frac{0{,}5172}{0{,}2069}\right) = 68{,}2^\circ \quad \text{(góc tham chiếu)}
+\]
+
+Cả hai thành phần âm $\Rightarrow$ góc pha $\theta = -(180^\circ - 68{,}2^\circ) = -111{,}8^\circ$.
+
+\textbf{VSWR trên đoạn dây:}
+\[
+\boxed{\text{VSWR} = \frac{1 + |\Gamma|}{1 - |\Gamma|} = \frac{1 + 0{,}557}{1 - 0{,}557} = \frac{1{,}557}{0{,}443} = 3{,}51}
+\]
+
+\textbf{Bước 3: Quay trên đồ thị Smith}
+
+Di chuyển $2\beta\ell = 2 \times 130{,}8^\circ = 261{,}6^\circ$ theo chiều kim đồng hồ (hướng về máy phát) trên đồ thị Smith.
+
+Góc pha mới:
+\[
+\angle\Gamma_{\text{SMA}} = -111{,}8^\circ - 261{,}6^\circ = -373{,}4^\circ = -13{,}4^\circ
+\]
+
+\[
+\Gamma_{\text{SMA}} = 0{,}557\angle(-13{,}4^\circ) = 0{,}557(\cos 13{,}4^\circ - j\sin 13{,}4^\circ) = 0{,}542 - j0{,}129
+\]
+
+Trở kháng chuẩn hoá tại SMA:
+\[
+z_{\text{SMA}} = \frac{1 + \Gamma_{\text{SMA}}}{1 - \Gamma_{\text{SMA}}} = \frac{1{,}542 - j0{,}129}{0{,}458 + j0{,}129}
+\]
+
+Nhân liên hợp:
+\begin{align*}
+z_{\text{SMA}} &= \frac{(1{,}542 - j0{,}129)(0{,}458 - j0{,}129)}{0{,}458^2 + 0{,}129^2} \\
+&= \frac{0{,}706 - j0{,}199 - j0{,}0591 - 0{,}0166}{0{,}2098 + 0{,}0166} \\
+&= \frac{0{,}690 - j0{,}258}{0{,}2265} = 3{,}044 - j1{,}140
+\end{align*}
+
+\[
+\boxed{Z_{\text{SMA}} = 50 \times z_{\text{SMA}} = 50(3{,}044 - j1{,}140) = 152{,}2 - j57{,}0~\Omega}
+\]
+
+\textbf{Kiểm tra bằng công thức đường truyền:}
+
+$t = \tan(130{,}8^\circ) = -\tan(49{,}2^\circ) = -1{,}159$
+
+\[
+Z_{\text{SMA}} = 50 \times \frac{(20 - j30) + j50 \times (-1{,}159)}{50 + j(20 - j30)(-1{,}159)}
+\]
+
+Tử: $(20 - j30) - j57{,}95 = 20 - j87{,}95$
+
+Mẫu: $50 + (-1{,}159)(j20 + 30) = 50 - 34{,}77 - j23{,}18 = 15{,}23 - j23{,}18$
+
+\[
+Z_{\text{SMA}} = 50 \times \frac{20 - j87{,}95}{15{,}23 - j23{,}18} = 50 \times (3{,}04 - j1{,}14) = 152 - j57~\Omega \quad \checkmark
+\]
+
+\subsubsection{(c) Cắt ngắn đoạn dây để có trở kháng thuần trở}
+
+\textbf{Phân tích trên đồ thị Smith:}
+
+Trở kháng thuần trở tương ứng với các điểm nằm trên trục thực của đồ thị Smith, tức $\Gamma$ phải là số thực (pha $= 0^\circ$ hoặc $180^\circ$).
+
+Điều kiện: $\theta - 2\beta d = n \times 180^\circ$ (với $n$ nguyên)
+
+\textbf{Trường hợp 1:} $\theta - 2\beta d = -180^\circ$
+\[
+2\beta d_1 = -111{,}8^\circ + 180^\circ = 68{,}2^\circ \implies \beta d_1 = 34{,}1^\circ
+\]
+\[
+d_1 = \frac{34{,}1}{360} \times 68{,}8 = 6{,}52~\text{mm}
+\]
+
+$\Gamma$ âm thực $\Rightarrow Z < Z_0$:
+\[
+Z_1 = 50 \times \frac{1 - 0{,}557}{1 + 0{,}557} = 50 \times \frac{0{,}443}{1{,}557} = 14{,}2~\Omega
+\]
+
+\textbf{Trường hợp 2:} $\theta - 2\beta d = -360^\circ$ (hay $0^\circ$ trên vòng)
+\[
+2\beta d_2 = -111{,}8^\circ + 360^\circ = 248{,}2^\circ \implies \beta d_2 = 124{,}1^\circ
+\]
+\[
+d_2 = \frac{124{,}1}{360} \times 68{,}8 = 23{,}7~\text{mm}
+\]
+
+$\Gamma$ dương thực $\Rightarrow Z > Z_0$:
+\[
+Z_2 = 50 \times \frac{1 + 0{,}557}{1 - 0{,}557} = 50 \times \frac{1{,}557}{0{,}443} = 175{,}7~\Omega
+\]
+
+\textbf{Kết luận:} Chiều dài gần nhất với 25~mm là:
+\[
+\boxed{d = 23{,}7~\text{mm}, \quad Z_{\text{in}} = 175{,}7~\Omega \text{ (thuần trở)}}
+\]
+
+%=============================================================================
+% BAI TAP 3
+%=============================================================================
+\newpage
+\section{Bài 3: Phối hợp trở kháng anten patch bằng dây chêm hở mạch}
+
+\subsection{Đề bài}
+Một anten patch 5,8~GHz được in trên tấm Rogers RO4350B ($h = 0{,}508$~mm, $\varepsilon_r = 3{,}66$) và được cấp bằng đường microstrip 50~$\Omega$ ($W = 1{,}1$~mm, $\varepsilon_{\text{eff}} = 2{,}9$). Tại mép cấp, trở kháng của anten đo được là $Z_A = 85 - j45~\Omega$. Hãy phối hợp trở kháng bằng một đoạn dây chêm microstrip hở mạch mắc song song.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Dùng đồ thị Smith tìm khoảng cách $d$ từ anten đến dây chêm và chiều dài $\ell$ của dây chêm, cho cả hai lời giải.
+    \item Chọn lời giải có dây chêm ngắn hơn và đổi ra mm.
+    \item Vì sao trong thực tế người ta thường tránh dây chêm dài gần $\lambda/2$?
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{Tính toán sơ bộ}
+
+Bước sóng trên microstrip (với $\varepsilon_{\text{eff}} = 2{,}9$):
+\[
+\lambda_g = \frac{c}{f\sqrt{\varepsilon_{\text{eff}}}} = \frac{3 \times 10^8}{5{,}8 \times 10^9 \times \sqrt{2{,}9}} = \frac{3 \times 10^8}{5{,}8 \times 10^9 \times 1{,}703} = 30{,}37~\text{mm}
+\]
+
+Chuẩn hoá trở kháng tải:
+\[
+z_A = \frac{Z_A}{Z_0} = \frac{85 - j45}{50} = 1{,}7 - j0{,}9
+\]
+
+Chuyển sang dẫn nạp chuẩn hoá:
+\[
+y_A = \frac{1}{z_A} = \frac{1}{1{,}7 - j0{,}9} = \frac{1{,}7 + j0{,}9}{1{,}7^2 + 0{,}9^2} = \frac{1{,}7 + j0{,}9}{3{,}70} = 0{,}4595 + j0{,}2432
+\]
+
+\subsubsection{(a) Hai lời giải phối hợp bằng dây chêm đơn}
+
+\textbf{Phương pháp đồ thị Smith:}
+
+\begin{enumerate}
+    \item Vẽ $y_A = 0{,}4595 + j0{,}2432$ trên đồ thị dẫn nạp Smith.
+    \item Vẽ vòng tròn $|\Gamma|$ không đổi qua $y_A$.
+    \item Quay theo chiều kim đồng hồ (hướng máy phát) đến khi giao vòng tròn $g = 1$.
+    \item Đọc khoảng cách $d/\lambda$ và dẫn nạp $b$ tại giao điểm.
+\end{enumerate}
+
+\textbf{Tính toán giải tích:}
+
+Đặt $t = \tan(\beta d)$, dẫn nạp sau khi di chuyển khoảng cách $d$:
+\[
+y(d) = \frac{y_A + jt}{1 + jy_A t}
+\]
+
+Điều kiện $\text{Re}[y(d)] = 1$:
+\[
+\frac{g_A(1 + t^2)}{(1 - b_A t)^2 + g_A^2 t^2} = 1
+\]
+
+với $g_A = 0{,}4595$, $b_A = 0{,}2432$.
+
+Khai triển và rút gọn:
+\[
+0{,}1893\,t^2 + 0{,}4864\,t - 0{,}5405 = 0
+\]
+
+Giải phương trình bậc 2:
+\[
+t = \frac{-0{,}4864 \pm \sqrt{0{,}4864^2 + 4 \times 0{,}1893 \times 0{,}5405}}{2 \times 0{,}1893} = \frac{-0{,}4864 \pm \sqrt{0{,}6457}}{0{,}3786}
+\]
+\[
+= \frac{-0{,}4864 \pm 0{,}8036}{0{,}3786}
+\]
+
+\[
+t_1 = \frac{0{,}3172}{0{,}3786} = 0{,}838 \implies \beta d_1 = \arctan(0{,}838) = 40{,}0^\circ \implies d_1 = \frac{40{,}0}{360} \times 30{,}37 = 3{,}37~\text{mm}
+\]
+
+\[
+t_2 = \frac{-1{,}290}{0{,}3786} = -3{,}408 \implies \beta d_2 = \arctan(-3{,}408) + 180^\circ = 106{,}4^\circ \implies d_2 = \frac{106{,}4}{360} \times 30{,}37 = 8{,}97~\text{mm}
+\]
+
+\textbf{Tính dẫn nạp ảo cần triệt tiêu:}
+
+Tại $d_1$ ($t_1 = 0{,}838$):
+\[
+\text{Im}[y(d_1)] = \frac{(b_A + t_1)(1 - b_A t_1) - g_A^2 t_1}{g_A(1 + t_1^2)} = \frac{1{,}081 \times 0{,}796 - 0{,}177}{0{,}782} = \frac{0{,}684}{0{,}782} = 0{,}874
+\]
+
+Dây chêm cần cung cấp: $b_s = -0{,}874$.
+
+Với dây chêm hở mạch: $b_s = \tan(\beta\ell_s)$
+\[
+\tan(\beta\ell_{s1}) = -0{,}874 \implies \beta\ell_{s1} = 180^\circ - 41{,}2^\circ = 138{,}8^\circ
+\]
+\[
+\ell_{s1} = \frac{138{,}8}{360} \times 30{,}37 = 11{,}71~\text{mm}
+\]
+
+Tại $d_2$ ($t_2 = -3{,}408$):
+\[
+\text{Im}[y(d_2)] = -0{,}874
+\]
+
+Dây chêm cần: $b_s = +0{,}874$
+\[
+\tan(\beta\ell_{s2}) = 0{,}874 \implies \beta\ell_{s2} = 41{,}2^\circ
+\]
+\[
+\ell_{s2} = \frac{41{,}2}{360} \times 30{,}37 = 3{,}47~\text{mm}
+\]
+
+\textbf{Tóm tắt hai lời giải:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Lời giải} & $d/\lambda_g$ & $d$~(mm) & $\ell_s/\lambda_g$ & $\ell_s$~(mm) \\
+\hline
+1 & 0{,}111 & 3{,}37 & 0{,}386 & 11{,}71 \\
+\hline
+2 & 0{,}295 & 8{,}97 & 0{,}114 & 3{,}47 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{(b) Lời giải dây chêm ngắn hơn}
+
+Chọn \textbf{Lời giải 2} với dây chêm ngắn hơn:
+\[
+\boxed{d = 8{,}97~\text{mm}, \quad \ell_s = 3{,}47~\text{mm} \text{ (chiều dài điện)}}
+\]
+
+\textbf{Hiệu chỉnh điện dung mép (fringing) cho đầu hở:}
+
+Với $W/h = 1{,}1/0{,}508 = 2{,}165$ và $\varepsilon_{\text{eff}} \approx 2{,}85$ (từ công thức Hammerstad):
+\[
+\Delta\ell = 0{,}412h \cdot \frac{(\varepsilon_{\text{eff}} + 0{,}3)(W/h + 0{,}264)}{(\varepsilon_{\text{eff}} - 0{,}258)(W/h + 0{,}8)}
+\]
+\[
+= 0{,}412 \times 0{,}508 \times \frac{(2{,}85 + 0{,}3)(2{,}165 + 0{,}264)}{(2{,}85 - 0{,}258)(2{,}165 + 0{,}8)}
+= 0{,}2093 \times \frac{3{,}15 \times 2{,}429}{2{,}592 \times 2{,}965}
+\]
+\[
+= 0{,}2093 \times \frac{7{,}653}{7{,}686} = 0{,}2093 \times 0{,}996 = 0{,}208~\text{mm}
+\]
+
+Chiều dài vật lý dây chêm:
+\[
+\boxed{\ell_{s,\text{physical}} = \ell_s - \Delta\ell = 3{,}47 - 0{,}21 = 3{,}26~\text{mm}}
+\]
+
+\subsubsection{(c) Lý do tránh dây chêm gần $\lambda/2$}
+
+\begin{enumerate}
+    \item \textbf{Dẫn nạp bằng không:} Tại chiều dài đúng $\lambda/2$, dây chêm hở mạch có dẫn nạp vào $Y_s = jY_0\tan(\pi) = 0$, tức hoạt động như mạch hở --- không đóng góp gì cho việc phối hợp trở kháng.
+    
+    \item \textbf{Độ nhạy tần số cao:} Gần $\lambda/2$, hàm $\tan(\beta\ell)$ thay đổi rất nhanh, biến thiên từ $+\infty$ qua $0$ đến $-\infty$. Sai lệch nhỏ về tần số hoặc dung sai gia công sẽ gây biến động lớn về dẫn nạp, làm mạch phối hợp rất băng hẹp và không ổn định.
+    
+    \item \textbf{Cộng hưởng bậc cao:} Dây chêm dài gần $\lambda/2$ dễ tạo cộng hưởng ký sinh tại các tần số harmonics, gây nhiễu cho hệ thống.
+    
+    \item \textbf{Tổn hao và diện tích:} Dây chêm dài hơn sẽ có tổn hao dẫn và tổn hao điện môi lớn hơn, đồng thời chiếm nhiều diện tích bo mạch hơn.
+\end{enumerate}
+
+%=============================================================================
+% BAI TAP 4
+%=============================================================================
+\newpage
+\section{Bài 4: Phối hợp trở kháng đầu vào LNA 28~GHz}
+
+\subsection{Đề bài}
+Tầng vào của một bộ khuếch đại tạp âm thấp (LNA) 28~GHz cho 5G được thiết kế trên công nghệ CMOS 22~nm. Mô phỏng cho thấy ở 28~GHz, nhìn vào cổng của transistor $M_1$ (kể cả điện dung lớp ESD) thấy trở kháng $Z_{\text{gate}} = 15 - j45~\Omega$. Mạng phối hợp phải nằm trên chip, chỉ gồm một cuộn xoắn (spiral inductor) và một tụ kim loại MOM.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Tính điện dung tương đương tại cổng.
+    \item Dùng đồ thị Smith thiết kế mạng hình L đưa $Z_{\text{gate}}$ về 50~$\Omega$; cho cả hai lời giải và giá trị linh kiện.
+    \item Lời giải nào khả thi hơn trên chip? Ước lượng hệ số phẩm chất $Q$ của nút phối hợp và nhận xét về băng thông.
+\end{enumerate}
+
+\subsection{Lời giải}
+
+\subsubsection{(a) Điện dung tương đương tại cổng}
+
+Trở kháng $Z_{\text{gate}} = 15 - j45~\Omega$ có thể biểu diễn bằng mạch nối tiếp $R_s$--$C_s$:
+
+\[
+Z_{\text{gate}} = R_s + \frac{1}{j\omega C_s} = R_s - \frac{j}{\omega C_s}
+\]
+
+Suy ra: $R_s = 15~\Omega$ và $\frac{1}{\omega C_s} = 45~\Omega$.
+
+Tại $f = 28$~GHz:
+\[
+\omega = 2\pi \times 28 \times 10^9 = 1{,}759 \times 10^{11}~\text{rad/s}
+\]
+
+\[
+\boxed{C_{\text{gate}} = \frac{1}{\omega \times 45} = \frac{1}{1{,}759 \times 10^{11} \times 45} = 126{,}3~\text{fF}}
+\]
+
+Đây bao gồm điện dung cổng của transistor $M_1$ và điện dung ký sinh của lớp ESD.
+
+\subsubsection{(b) Thiết kế mạng hình L}
+
+\textbf{Chuẩn hoá:}
+\[
+z_{\text{gate}} = \frac{Z_{\text{gate}}}{Z_0} = \frac{15 - j45}{50} = 0{,}3 - j0{,}9
+\]
+
+Vì $R_{\text{gate}} = 15 < Z_0 = 50$ (điểm nằm trong vòng tròn $r = 1$), ta có hai cấu hình mạng L khả thi.
+
+\textbf{Lời giải 1: Nối tiếp L $\to$ Song song C} (nhìn từ cổng ra nguồn 50~$\Omega$)
+
+Sau phần tử nối tiếp:
+\[
+Z_1 = Z_{\text{gate}} + jX_s = 15 + j(X_s - 45)
+\]
+
+Điều kiện $\text{Re}(Y_1) = 1/50$:
+\[
+\frac{15}{225 + (X_s - 45)^2} = 0{,}02
+\]
+\[
+(X_s - 45)^2 = 750 - 225 = 525
+\]
+\[
+X_s - 45 = \pm\sqrt{525} = \pm 22{,}91
+\]
+
+Lấy $X_s = 45 + 22{,}91 = 67{,}91~\Omega$ (cuộn cảm nối tiếp):
+
+\[
+\text{Im}(Y_1) = \frac{-22{,}91}{750} = -0{,}03055~\text{S}
+\]
+
+Dẫn nạp song song cần thêm: $B_p = +0{,}03055$~S (tụ điện).
+
+\[
+\boxed{L_{\text{series}} = \frac{67{,}91}{1{,}759 \times 10^{11}} = 386~\text{pH}}
+\]
+\[
+\boxed{C_{\text{shunt}} = \frac{0{,}03055}{1{,}759 \times 10^{11}} = 173{,}6~\text{fF}}
+\]
+
+\textbf{Lời giải 2: Song song L $\to$ Nối tiếp C}
+
+Dẫn nạp cổng:
+\[
+Y_{\text{gate}} = \frac{1}{Z_{\text{gate}}} = \frac{1}{15 - j45} = \frac{15 + j45}{225 + 2025} = \frac{15 + j45}{2250} = 0{,}00667 + j0{,}02~\text{S}
+\]
+
+Sau phần tử song song: $Y_1 = 0{,}00667 + j(0{,}02 + B_p)$
+
+Điều kiện $\text{Re}(Z_1) = 50$:
+\[
+\frac{0{,}00667}{0{,}00667^2 + (0{,}02 + B_p)^2} = 50
+\]
+\[
+(0{,}02 + B_p)^2 = \frac{0{,}00667}{50} - 0{,}00667^2 = 1{,}334 \times 10^{-4} - 4{,}449 \times 10^{-5} = 8{,}889 \times 10^{-5}
+\]
+\[
+0{,}02 + B_p = \pm 0{,}009428
+\]
+
+Lấy $B_p = -0{,}02 - 0{,}009428 = -0{,}02943$~S (cuộn cảm song song):
+
+\[
+\text{Im}(Z_1) = \frac{-(0{,}02 + B_p)}{0{,}00667^2 + (0{,}02 + B_p)^2} = \frac{0{,}009428}{1{,}333 \times 10^{-4}} = 70{,}7~\Omega
+\]
+
+Phần tử nối tiếp cần thêm: $X_s = -70{,}7~\Omega$ (tụ điện nối tiếp).
+
+\[
+\boxed{L_{\text{shunt}} = \frac{1}{1{,}759 \times 10^{11} \times 0{,}02943} = 193{,}1~\text{pH}}
+\]
+\[
+\boxed{C_{\text{series}} = \frac{1}{1{,}759 \times 10^{11} \times 70{,}7} = 80{,}4~\text{fF}}
+\]
+
+\textbf{Tóm tắt hai lời giải:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Lời giải} & \textbf{Phần tử 1 (gần cổng)} & \textbf{Phần tử 2 (gần 50~$\Omega$)} \\
+\hline
+1 & $L_{\text{series}} = 386$~pH & $C_{\text{shunt}} = 173{,}6$~fF \\
+\hline
+2 & $L_{\text{shunt}} = 193{,}1$~pH & $C_{\text{series}} = 80{,}4$~fF \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{(c) Tính khả thi trên chip, hệ số $Q$ và băng thông}
+
+\textbf{So sánh tính khả thi:}
+
+\textbf{Lời giải 1} (nối tiếp L + song song C) \textbf{khả thi hơn} vì:
+\begin{itemize}
+    \item Cuộn cảm xoắn nối tiếp trên đường tín hiệu dễ thiết kế và layout trên chip CMOS. Giá trị 386~pH là hợp lý cho cuộn xoắn on-chip tại 28~GHz.
+    \item Tụ MOM song song xuống đất có cấu trúc đơn giản, giá trị 173{,}6~fF nằm trong phạm vi thiết kế thông thường.
+    \item Không cần via xuyên xuống đất cho cuộn cảm.
+\end{itemize}
+
+\textbf{Lời giải 2} kém khả thi hơn vì:
+\begin{itemize}
+    \item Cuộn cảm song song cần kết nối trở kháng thấp xuống đất, đòi hỏi through-silicon via (TSV) hoặc ground ring, gây thêm ký sinh.
+    \item Tụ nối tiếp 80{,}4~fF rất nhỏ, có thể bị chi phối bởi điện dung ký sinh của interconnect.
+\end{itemize}
+
+\textbf{Hệ số phẩm chất $Q$ của nút phối hợp:}
+
+Hệ số $Q$ tải của mạng hình L:
+\[
+Q = \sqrt{\frac{R_{\text{high}}}{R_{\text{low}}} - 1} = \sqrt{\frac{50}{15} - 1} = \sqrt{\frac{7}{3}} = \sqrt{2{,}333} = \boxed{1{,}53}
+\]
+
+\textbf{Nhận xét:} Với $Q = 1{,}53$ (khá thấp), mạng phối hợp có tính chất \textbf{băng rộng}. Ước tính băng thông tương đối:
+\[
+\frac{\Delta f}{f_0} \approx \frac{2}{Q} = \frac{2}{1{,}53} \approx 1{,}31 \quad (\text{hay } 131\%)
+\]
+
+Điều này cho thấy mạng L đơn giản này có thể phối hợp trên dải tần rất rộng xung quanh 28~GHz. Tuy nhiên, trong thực tế:
+\begin{itemize}
+    \item Trở kháng cổng $Z_{\text{gate}}$ biến đổi theo tần số, thu hẹp băng thông thực tế.
+    \item Hệ số $Q$ của cuộn xoắn on-chip tại 28~GHz thường chỉ đạt 10--15, gây thêm tổn hao chèn (insertion loss).
+    \item Đối với 5G NR mmWave (dải n257: 26,5--29,5~GHz), yêu cầu băng thông khoảng 3~GHz ($\sim$10,7\%), hoàn toàn nằm trong khả năng của mạng L này.
+\end{itemize}
+
+\end{document}
